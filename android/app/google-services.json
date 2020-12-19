@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "515325063656",
+    "firebase_url": "https://houseofcodetest-8d333.firebaseio.com",
+    "project_id": "houseofcodetest-8d333",
+    "storage_bucket": "houseofcodetest-8d333.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:515325063656:android:44055c0ead41ae6389b45d",
+        "android_client_info": {
+          "package_name": "com.houseofcodechat"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "515325063656-999rc96tdpaphnqb9clmrp3vi3pd4d5l.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.houseofcodechat",
+            "certificate_hash": "55e9085964ea445be6d810e94ef899e0c8b291f0"
+          }
+        },
+        {
+          "client_id": "515325063656-6n4qup8tccj7q5cfldht2ngn623imebs.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAlK3Sh9jK_0olIBo7HYRzhoRmJT98hstA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "515325063656-6n4qup8tccj7q5cfldht2ngn623imebs.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
