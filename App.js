@@ -1,11 +1,5 @@
 import {
-  Colors,
-  DebugInstructions,
-  Header,
-  LearnMoreLinks,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen'
-import {
+  Button,
   SafeAreaView,
   ScrollView,
   StatusBar,
@@ -13,7 +7,10 @@ import {
   Text,
   View,
 } from 'react-native'
+import { NavigationContainer, useNavigation } from '@react-navigation/native'
 
+import AuthNavigator from './app/navigation/AuthNavigator'
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 /**
  * Sample React Native App
  * https://github.com/facebook/react-native
@@ -21,50 +18,70 @@ import {
  * @format
  * @flow strict-local
  */
-import LoginScreen from './src/LoginScreen'
+import LoginScreen from './app/screens/LoginScreen'
 import React from 'react'
+import {createBottomTabNavigator} from '@react-navigation/bottom-tabs'
+import { createStackNavigator } from '@react-navigation/stack'
 
-const App: () => React$Node = () => {
-  return <LoginScreen />
+const Link = () => 
+{
+ const navigation = useNavigation();
+  return(
+<Button
+title = "Click"
+onPress ={() => navigation.navigate('TweetDetails', {id: 1}) }
+/>
+
+)
 }
 
-const styles = StyleSheet.create({
-  scrollView: {
-    backgroundColor: Colors.lighter,
-  },
-  engine: {
-    position: 'absolute',
-    right: 0,
-  },
-  body: {
-    backgroundColor: Colors.white,
-  },
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
-  },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
-    color: Colors.black,
-  },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
-    color: Colors.dark,
-  },
-  highlight: {
-    fontWeight: '700',
-  },
-  footer: {
-    color: Colors.dark,
-    fontSize: 12,
-    fontWeight: '600',
-    padding: 4,
-    paddingRight: 12,
-    textAlign: 'right',
-  },
-})
+const Tweets = ({navigation}) => (
+  <View>
+    <Text>Tweets</Text>
+    <Link/>
+  </View>
+)
+const TweetDetails = ({ route }) => (
+  <View>
+    <Text>Tweets Details{route.params.id}</Text>
+  </View>
+)
 
-export default App
+const Stack = createStackNavigator()
+const StackNavigator = () => (
+  <Stack.Navigator>
+    <Stack.Screen 
+    name="Tweets" 
+    component={Tweets}
+     />
+    <Stack.Screen name="TweetDetails" component={TweetDetails} />
+  </Stack.Navigator>
+)
+
+const Account = () => <View><Text>Account screen</Text></View>
+
+const Tab = createBottomTabNavigator();
+const TabNavigator = () =>
+(
+<Tab.Navigator
+tabBarOptions={{
+  activeBackgroundColor: "tomato",
+  activeTintColor: "white",
+  inactiveBackgroundColor: "#eee",
+  inactiveTintColor: "black"
+}}
+>
+<Tab.Screen name = "Feed" component={StackNavigator}
+options={{tabBarIcon: ({size, color}) => <Icon name="home" size= {25} color={color}/>}}
+/>
+<Tab.Screen name= "Account" component={Account}/>
+</Tab.Navigator>
+
+)
+export default function App(){ 
+return(
+ <NavigationContainer>
+ <AuthNavigator/>
+ </NavigationContainer>
+ )
+}

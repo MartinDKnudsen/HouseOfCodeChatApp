@@ -1,19 +1,25 @@
 import {
+  Button,
   SafeAreaView,
   ScrollView,
   StatusBar,
   StyleSheet,
   Text,
-  View,
+  View
 } from 'react-native'
+import { NavigationContainer, useNavigation } from '@react-navigation/native'
 
-export default function LoginScreen() {
+import React from 'react';
+
+export default function WelcomeScreen({navigate}) {
+    const navigation = useNavigation()
   return (
     <View style={styles.container}>
-      <Text style={styles.textcsadolor}>HEASDWDWJ</Text>
+      <Button title="Login" onPress={() => navigation.navigate("Login")}/>
     </View>
   )
 }
+
 
 const styles = StyleSheet.create({
   container: {
