@@ -11,6 +11,7 @@ import {
   View,
 } from 'react-native'
 
+import Facebook from './FacebookLoginScreen'
 import React from 'react'
 import Screen from './Screen'
 
@@ -18,10 +19,17 @@ export default function LoginScreen() {
   return (
     <Screen style={styles.container}>
       <GoogleSigninButton
-        style={{ width: '90%', height: 55, alignSelf: 'center', marginTop: 500 }}
+        style={{
+          width: '90%',
+          height: 55,
+          alignSelf: 'center',
+          marginTop: 500,
+        }}
         size={GoogleSigninButton.Size.Wide}
         color={GoogleSigninButton.Color.Dark}
       />
+      <Facebook />
+
       <Text style={styles.textcsadolor}>LoginScreen</Text>
     </Screen>
   )
