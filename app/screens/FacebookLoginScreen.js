@@ -4,8 +4,16 @@ import {
   GraphRequestManager,
   LoginButton,
 } from 'react-native-fbsdk'
+import {
+  Button,
+  SafeAreaView,
+  ScrollView,
+  StatusBar,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native'
 import React, { Component } from 'react'
-import { Text, View } from 'react-native'
 
 export default class App extends Component {
   state = { userInfo: {} }
@@ -33,8 +41,13 @@ export default class App extends Component {
 
   render() {
     return (
-      <View style={{ flex: 1, margin: 50,}}>
-        <LoginButton
+      <View style={styles.container}>
+        <LoginButton 
+          style={{
+            width: '88%',
+            height: 50,
+            alignSelf: 'center',
+          }}
           onLoginFinished={(error, result) => {
             if (error) {
               console.log('login has error: ' + result.error)
@@ -59,3 +72,17 @@ export default class App extends Component {
     )
   }
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#fff',
+    width: "100%",
+    height: 80
+  },
+  buttonTextStyle: {
+    color: '#000'
+  },
+})

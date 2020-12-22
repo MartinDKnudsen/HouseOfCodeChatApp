@@ -1,8 +1,5 @@
 import {
-    GoogleSignin,
-    GoogleSigninButton
-} from '@react-native-community/google-signin'
-import {
+  Button,
   SafeAreaView,
   ScrollView,
   StatusBar,
@@ -10,11 +7,36 @@ import {
   Text,
   View,
 } from 'react-native'
+import {
+    GoogleSigninButton,
+    statusCodes
+} from '@react-native-community/google-signin'
+import React, { useContext, useState } from 'react'
 
+import {AuthContext} from '../navigation/AuthProvider'
 import Facebook from './FacebookLoginScreen'
-import React from 'react'
+import { GoogleSignin } from '@react-native-community/google-signin'
 import Screen from './Screen'
 import auth from '@react-native-firebase/auth'
+import firebase from 'firebase'
+import {firebaseCfg} from '../auth/firebase/config'
+
+GoogleSignin.configure({
+  webClientId:
+    '515325063656-6n4qup8tccj7q5cfldht2ngn623imebs.apps.googleusercontent.com',
+  androidClientId:
+    '515325063656-6n4qup8tccj7q5cfldht2ngn623imebs.apps.googleusercontent.com',
+})
+
+async function onGoogleButtonPress() {
+  // Get the users ID token
+  const { idToken } = await GoogleSignin.signIn()
+  // Create a Google credential with the token
+  const googleCredential = auth.GoogleAuthProvider.credential(idToken)
+
+  // Sign-in the user with the credential
+  return auth().signInWithCredential(googleCredential)
+}
 
 const signIn = async () => {
   try {
@@ -31,13 +53,39 @@ const signIn = async () => {
     } else {
       // some other error happened
     }
-    console.log(getCurrentUser())
+  }
+}
+const GetUser = async () => {
+  const currentUser = await GoogleSignin.getCurrentUser()
+  console.log(currentUser)
+}
+
+const GooglesignOut = async () => {
+  try {
+    await GoogleSignin.revokeAccess()
+    await GoogleSignin.signOut()
+    this.setState({ user: null })
+    console.log("User is now signed out")
+  } catch (error) {
+    console.error(error)
   }
 }
 
-export default function LoginScreen() {
+const signOut = async () => {
+  auth()
+    .signOut()
+    .then(function () {
+    GooglesignOut();
+    })
+    .catch(function (error) {
+      // An error happened.
+    })
+}
+
+const LoginScreen = () => {
   return (
     <Screen style={styles.container}>
+      <Text style={styles.textcsadolor}>LoginScreen</Text>
       <GoogleSigninButton
         style={{
           width: '90%',
@@ -47,29 +95,26 @@ export default function LoginScreen() {
         }}
         size={GoogleSigninButton.Size.Wide}
         color={GoogleSigninButton.Color.Dark}
-        onPress={signIn}
+        onPress={() => onGoogleButtonPress().then((console.log("User is now singed in with google!")))}
       />
-      <Facebook />
-
-      <Text style={styles.textcsadolor}>LoginScreen</Text>
+      <View>
+        <Facebook />
+      </View>
+      <Button title="frank" onPress={GetUser}/>
     </Screen>
   )
 }
 
+export default LoginScreen
+
 const styles = StyleSheet.create({
   container: {
     backgroundColor: '#fff',
-    height: '100%',
+    height: '100%'
   },
   textcsadolor: {
     color: '#000',
     fontWeight: 'bold',
-  },
-  facebookButton: {
-    width: '90%',
-    height: 55,
-    alignSelf: 'center',
-    marginTop: 600,
+    fontSize: 20
   },
 })
-

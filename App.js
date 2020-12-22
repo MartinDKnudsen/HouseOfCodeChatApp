@@ -22,6 +22,7 @@ import LoginScreen from './app/screens/LoginScreen'
 import React from 'react'
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs'
 import { createStackNavigator } from '@react-navigation/stack'
+import firebase from 'firebase'
 
 const Link = () => 
 {
@@ -34,7 +35,6 @@ onPress ={() => navigation.navigate('TweetDetails', {id: 1}) }
 
 )
 }
-
 const Tweets = ({navigation}) => (
   <View>
     <Text>Tweets</Text>
