@@ -1,9 +1,5 @@
 import {
-    GoogleSigninButton,
-    statusCodes
-} from '@react-native-community/google-signin'
-import React, { useContext, useState } from 'react'
-import {
+  Button,
   SafeAreaView,
   ScrollView,
   StatusBar,
@@ -11,12 +7,19 @@ import {
   Text,
   View,
 } from 'react-native'
+import {
+    GoogleSigninButton,
+    statusCodes
+} from '@react-native-community/google-signin'
+import React, { useContext, useState } from 'react'
 
 import {AuthContext} from '../navigation/AuthProvider'
 import Facebook from './FacebookLoginScreen'
 import { GoogleSignin } from '@react-native-community/google-signin'
 import Screen from './Screen'
 import auth from '@react-native-firebase/auth'
+import firebase from 'firebase'
+import {firebaseCfg} from '../auth/firebase/config'
 
 GoogleSignin.configure({
   webClientId:
@@ -52,6 +55,32 @@ const signIn = async () => {
     }
   }
 }
+const GetUser = async () => {
+  const currentUser = await GoogleSignin.getCurrentUser()
+  console.log(currentUser)
+}
+
+const GooglesignOut = async () => {
+  try {
+    await GoogleSignin.revokeAccess()
+    await GoogleSignin.signOut()
+    this.setState({ user: null })
+    console.log("User is now signed out")
+  } catch (error) {
+    console.error(error)
+  }
+}
+
+const signOut = async () => {
+  auth()
+    .signOut()
+    .then(function () {
+    GooglesignOut();
+    })
+    .catch(function (error) {
+      // An error happened.
+    })
+}
 
 const LoginScreen = () => {
   return (
@@ -71,12 +100,12 @@ const LoginScreen = () => {
       <View>
         <Facebook />
       </View>
+      <Button title="frank" onPress={GetUser}/>
     </Screen>
   )
 }
 
 export default LoginScreen
-
 
 const styles = StyleSheet.create({
   container: {
