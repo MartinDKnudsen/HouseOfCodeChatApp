@@ -1,6 +1,6 @@
 import {
-  GoogleSignin,
-  GoogleSigninButton,
+    GoogleSignin,
+    GoogleSigninButton
 } from '@react-native-community/google-signin'
 import {
   SafeAreaView,
@@ -14,6 +14,26 @@ import {
 import Facebook from './FacebookLoginScreen'
 import React from 'react'
 import Screen from './Screen'
+import auth from '@react-native-firebase/auth'
+
+const signIn = async () => {
+  try {
+    await GoogleSignin.hasPlayServices()
+    const userInfo = await GoogleSignin.signIn()
+    this.setState({ userInfo })
+  } catch (error) {
+    if (error.code === statusCodes.SIGN_IN_CANCELLED) {
+      // user cancelled the login flow
+    } else if (error.code === statusCodes.IN_PROGRESS) {
+      // operation (e.g. sign in) is in progress already
+    } else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
+      // play services not available or outdated
+    } else {
+      // some other error happened
+    }
+    console.log(getCurrentUser())
+  }
+}
 
 export default function LoginScreen() {
   return (
@@ -27,6 +47,7 @@ export default function LoginScreen() {
         }}
         size={GoogleSigninButton.Size.Wide}
         color={GoogleSigninButton.Color.Dark}
+        onPress={signIn}
       />
       <Facebook />
 
@@ -51,3 +72,4 @@ const styles = StyleSheet.create({
     marginTop: 600,
   },
 })
+

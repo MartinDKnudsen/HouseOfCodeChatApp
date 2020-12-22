@@ -13,7 +13,7 @@ export default class App extends Component {
   getInfoFromToken = (token) => {
     const PROFILE_REQUEST_PARAMS = {
       fields: {
-        string: 'id, name,  first_name, last_name',
+        string: 'id, name,  first_name, last_name, picture',
       },
     }
     const profileRequest = new GraphRequest(
@@ -44,6 +44,7 @@ export default class App extends Component {
               AccessToken.getCurrentAccessToken().then((data) => {
                 const accessToken = data.accessToken.toString()
                 this.getInfoFromToken(accessToken)
+                console.log(accessToken)
               })
             }
           }}

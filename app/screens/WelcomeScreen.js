@@ -15,11 +15,14 @@ export default function WelcomeScreen({navigate}) {
     const navigation = useNavigation()
   return (
     <View style={styles.container}>
-      <Button title="Login" onPress={() => navigation.navigate("Login")}/>
+      <Button title="Login" onPress={() => navigation.navigate('Login')} />
+      <Button
+        title="AccountScreen"
+        onPress={() => navigation.navigate('Account')}
+      />
     </View>
   )
 }
-
 
 const styles = StyleSheet.create({
   container: {
