@@ -8,7 +8,6 @@ import { createStackNavigator } from '@react-navigation/stack'
 
 const Stack = createStackNavigator()
 
-
 const AuthNavigator = () => (
   <Stack.Navigator>
     <Stack.Screen
@@ -34,5 +33,4 @@ const AuthNavigator = () => (
   </Stack.Navigator>
 )
 
-
-export default AuthNavigator;
+export default AuthNavigator

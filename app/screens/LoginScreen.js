@@ -8,18 +8,19 @@ import {
   View,
 } from 'react-native'
 import {
-    GoogleSigninButton,
-    statusCodes
+  GoogleSignin,
+  GoogleSigninButton,
+  statusCodes,
 } from '@react-native-community/google-signin'
-import React, { useContext, useState } from 'react'
+import { NavigationContainer, useNavigation } from '@react-navigation/native'
+import React, { useContext, useEffect, useState } from 'react'
 
-import {AuthContext} from '../navigation/AuthProvider'
+import { AuthContext } from '../navigation/AuthProvider'
 import Facebook from './FacebookLoginScreen'
-import { GoogleSignin } from '@react-native-community/google-signin'
 import Screen from './Screen'
 import auth from '@react-native-firebase/auth'
 import firebase from 'firebase'
-import {firebaseCfg} from '../auth/firebase/config'
+import { firebaseCfg } from '../auth/firebase/config'
 
 GoogleSignin.configure({
   webClientId:
@@ -28,33 +29,6 @@ GoogleSignin.configure({
     '515325063656-6n4qup8tccj7q5cfldht2ngn623imebs.apps.googleusercontent.com',
 })
 
-async function onGoogleButtonPress() {
-  // Get the users ID token
-  const { idToken } = await GoogleSignin.signIn()
-  // Create a Google credential with the token
-  const googleCredential = auth.GoogleAuthProvider.credential(idToken)
-
-  // Sign-in the user with the credential
-  return auth().signInWithCredential(googleCredential)
-}
-
-const signIn = async () => {
-  try {
-    await GoogleSignin.hasPlayServices()
-    const userInfo = await GoogleSignin.signIn()
-    this.setState({ userInfo })
-  } catch (error) {
-    if (error.code === statusCodes.SIGN_IN_CANCELLED) {
-      // user cancelled the login flow
-    } else if (error.code === statusCodes.IN_PROGRESS) {
-      // operation (e.g. sign in) is in progress already
-    } else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
-      // play services not available or outdated
-    } else {
-      // some other error happened
-    }
-  }
-}
 const GetUser = async () => {
   const currentUser = await GoogleSignin.getCurrentUser()
   console.log(currentUser)
@@ -64,8 +38,7 @@ const GooglesignOut = async () => {
   try {
     await GoogleSignin.revokeAccess()
     await GoogleSignin.signOut()
-    this.setState({ user: null })
-    console.log("User is now signed out")
+    console.log('User is now signed out')
   } catch (error) {
     console.error(error)
   }
@@ -75,7 +48,7 @@ const signOut = async () => {
   auth()
     .signOut()
     .then(function () {
-    GooglesignOut();
+      GooglesignOut()
     })
     .catch(function (error) {
       // An error happened.
@@ -83,6 +56,30 @@ const signOut = async () => {
 }
 
 const LoginScreen = () => {
+  const [IsAuthorised, SetAuthorised] = useState(false)
+  const navigation = useNavigation()
+
+  async function onGoogleButtonPress() {
+    try {
+      // Get the users ID token
+      const { idToken } = await GoogleSignin.signIn()
+      // Create a Google credential with the token
+      const googleCredential = auth.GoogleAuthProvider.credential(idToken)
+
+      // Sign-in the user with the credential
+      const response = await auth().signInWithCredential(googleCredential)
+      SetAuthorised(true)
+      console.log(response)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+  useEffect(() => {
+    if (IsAuthorised) {
+      navigation.navigate('ChatRoom')
+    }
+  }, [IsAuthorised])
+
   return (
     <Screen style={styles.container}>
       <Text style={styles.textcsadolor}>LoginScreen</Text>
@@ -95,12 +92,16 @@ const LoginScreen = () => {
         }}
         size={GoogleSigninButton.Size.Wide}
         color={GoogleSigninButton.Color.Dark}
-        onPress={() => onGoogleButtonPress().then((console.log("User is now singed in with google!")))}
+        onPress={() =>
+          onGoogleButtonPress().then(
+            console.log('User is now singed in with google!'),
+          )
+        }
       />
       <View>
         <Facebook />
       </View>
-      <Button title="frank" onPress={GetUser}/>
+      <Button title="frank" onPress={GetUser} />
     </Screen>
   )
 }
@@ -110,11 +111,11 @@ export default LoginScreen
 const styles = StyleSheet.create({
   container: {
     backgroundColor: '#fff',
-    height: '100%'
+    height: '100%',
   },
   textcsadolor: {
     color: '#000',
     fontWeight: 'bold',
-    fontSize: 20
+    fontSize: 20,
   },
 })
