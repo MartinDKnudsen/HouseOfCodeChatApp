@@ -8,18 +8,18 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:515325063656:android:44055c0ead41ae6389b45d",
+        "mobilesdk_app_id": "1:515325063656:android:60beff708261e8a289b45d",
         "android_client_info": {
-          "package_name": "com.houseofcodechat"
+          "package_name": "com.houseofcodechatapp"
         }
       },
       "oauth_client": [
         {
-          "client_id": "515325063656-999rc96tdpaphnqb9clmrp3vi3pd4d5l.apps.googleusercontent.com",
+          "client_id": "515325063656-l0g6gj6g2jrk6qb6msmu3mqdgjuhin6c.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.houseofcodechat",
-            "certificate_hash": "55e9085964ea445be6d810e94ef899e0c8b291f0"
+            "package_name": "com.houseofcodechatapp",
+            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
           }
         },
         {

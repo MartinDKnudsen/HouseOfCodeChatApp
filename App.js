@@ -34,7 +34,6 @@ onPress ={() => navigation.navigate('TweetDetails', {id: 1}) }
 
 )
 }
-
 const Tweets = ({navigation}) => (
   <View>
     <Text>Tweets</Text>

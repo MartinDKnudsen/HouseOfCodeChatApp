@@ -13,18 +13,7 @@ import {
 } from '@react-native-community/google-signin'
 
 import React from 'react'
-
-const signOut = async () => {
-  try {
-    await GoogleSignin.revokeAccess()
-    await GoogleSignin.signOut()
-    setloggedIn(false)
-    setuserInfo([])
-  } catch (error) {
-    console.error(error)
-  }
-}
-
+import auth from '@react-native-firebase/auth'
 
 export default function AccountScreen() {
   return (
@@ -32,8 +21,7 @@ export default function AccountScreen() {
       <Text style={styles.textcsadolor}>AccountScreen</Text>
       <Button
         title="signOut"
-        onPress={signOut}
-      />
+           />
     </View>
   )
 }
