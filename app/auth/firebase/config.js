@@ -1,4 +1,4 @@
-import fb from 'firebase';
+import fb from 'firebase'
 
 const firebaseConfig = {
   apiKey: 'AIzaSyAlK3Sh9jK_0olIBo7HYRzhoRmJT98hstA',
@@ -10,4 +10,3 @@ const firebaseConfig = {
 export const firebase = !fb.apps.length
   ? fb.initializeApp(firebaseConfig)
   : fb.app()
-  
