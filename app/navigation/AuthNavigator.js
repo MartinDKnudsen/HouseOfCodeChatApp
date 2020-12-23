@@ -18,17 +18,7 @@ const AuthNavigator = () => (
     <Stack.Screen
       name="Login"
       component={LoginScreen}
-      options={{ headerTitleAlign: 'center' }}
-    />
-    <Stack.Screen
-      name="ChatRoom"
-      component={ChatScreen}
-      options={{ headerTitleAlign: 'center' }}
-    />
-    <Stack.Screen
-      name="Account"
-      component={AccountScreen}
-      options={{ headerTitleAlign: 'center' }}
+      options={{ headerTitleAlign: 'center', headerShown: false }}
     />
   </Stack.Navigator>
 )

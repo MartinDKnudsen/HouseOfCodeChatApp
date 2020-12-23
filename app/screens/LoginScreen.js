@@ -1,3 +1,5 @@
+import * as Progress from 'react-native-progress'
+
 import {
   Button,
   SafeAreaView,
@@ -21,6 +23,7 @@ import Screen from './Screen'
 import auth from '@react-native-firebase/auth'
 import firebase from 'firebase'
 import { firebaseCfg } from '../auth/firebase/config'
+import routes from '../navigation/routes'
 
 GoogleSignin.configure({
   webClientId:
@@ -31,7 +34,7 @@ GoogleSignin.configure({
 
 const GetUser = async () => {
   const currentUser = await GoogleSignin.getCurrentUser()
-  console.log(currentUser)
+  console.log(currentUser.user.email)
 }
 
 const GooglesignOut = async () => {
@@ -70,13 +73,14 @@ const LoginScreen = () => {
       const response = await auth().signInWithCredential(googleCredential)
       SetAuthorised(true)
       console.log(response)
+      console.log(idToken)
     } catch (error) {
       console.log(error)
     }
   }
   useEffect(() => {
     if (IsAuthorised) {
-      navigation.navigate('ChatRoom')
+      //navigation.navigate(routes.CHAT_SCREEN)
     }
   }, [IsAuthorised])
 
