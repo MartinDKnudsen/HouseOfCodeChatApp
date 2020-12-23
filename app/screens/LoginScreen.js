@@ -23,6 +23,7 @@ import Screen from './Screen'
 import auth from '@react-native-firebase/auth'
 import firebase from 'firebase'
 import { firebaseCfg } from '../auth/firebase/config'
+import jwtDecode from 'jwt-decode'
 import routes from '../navigation/routes'
 
 GoogleSignin.configure({
@@ -72,8 +73,8 @@ const LoginScreen = () => {
       // Sign-in the user with the credential
       const response = await auth().signInWithCredential(googleCredential)
       SetAuthorised(true)
-      console.log(response)
-      console.log(idToken)
+      const user = jwtDecode(idToken)
+      console.log(user)
     } catch (error) {
       console.log(error)
     }
