@@ -21,7 +21,7 @@ export default class App extends Component {
   getInfoFromToken = (token) => {
     const PROFILE_REQUEST_PARAMS = {
       fields: {
-        string: 'id, name,  first_name, last_name, picture',
+        string: 'id, name,  first_name, last_name, ',
       },
     }
     const profileRequest = new GraphRequest(
@@ -42,7 +42,7 @@ export default class App extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <LoginButton 
+        <LoginButton
           style={{
             width: '88%',
             height: 50,
@@ -79,10 +79,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#fff',
-    width: "100%",
-    height: 80
+    width: '100%',
+    height: 80,
   },
   buttonTextStyle: {
-    color: '#000'
+    color: '#000',
   },
 })

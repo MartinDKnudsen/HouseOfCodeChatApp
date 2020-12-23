@@ -9,7 +9,6 @@ import {
 } from 'react-native'
 import { NavigationContainer, useNavigation } from '@react-navigation/native'
 
-import AppNavigator from './app/navigation/AppNavigator'
 import AuthNavigator from './app/navigation/AuthNavigator'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 import LoginScreen from './app/screens/LoginScreen'
@@ -60,6 +59,7 @@ const Account = () => (
     <Text>Account screen</Text>
   </View>
 )
+
 const Tab = createBottomTabNavigator()
 const TabNavigator = () => (
   <Tab.Navigator

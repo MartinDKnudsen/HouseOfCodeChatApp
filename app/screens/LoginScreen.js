@@ -1,5 +1,3 @@
-import * as Progress from 'react-native-progress'
-
 import {
   Button,
   SafeAreaView,
@@ -19,6 +17,7 @@ import React, { useContext, useEffect, useState } from 'react'
 
 import { AuthContext } from '../navigation/AuthProvider'
 import Facebook from './FacebookLoginScreen'
+import Google from './GoogleLoginScreen'
 import Screen from './Screen'
 import auth from '@react-native-firebase/auth'
 import firebase from 'firebase'
@@ -34,8 +33,12 @@ GoogleSignin.configure({
 })
 
 const GetUser = async () => {
-  const currentUser = await GoogleSignin.getCurrentUser()
-  console.log(currentUser.user.email)
+  try {
+    const currentUser = await GoogleSignin.getCurrentUser()
+    console.log(currentUser.user.email)
+  } catch (error) {
+    console.log(error)
+  }
 }
 
 const GooglesignOut = async () => {
@@ -60,53 +63,14 @@ const signOut = async () => {
 }
 
 const LoginScreen = () => {
-  const [IsAuthorised, SetAuthorised] = useState(false)
-  const navigation = useNavigation()
-
-  async function onGoogleButtonPress() {
-    try {
-      // Get the users ID token
-      const { idToken } = await GoogleSignin.signIn()
-      // Create a Google credential with the token
-      const googleCredential = auth.GoogleAuthProvider.credential(idToken)
-
-      // Sign-in the user with the credential
-      const response = await auth().signInWithCredential(googleCredential)
-      SetAuthorised(true)
-      const user = jwtDecode(idToken)
-      console.log(user)
-    } catch (error) {
-      console.log(error)
-    }
-  }
-  useEffect(() => {
-    if (IsAuthorised) {
-      //navigation.navigate(routes.CHAT_SCREEN)
-    }
-  }, [IsAuthorised])
-
   return (
     <Screen style={styles.container}>
       <Text style={styles.textcsadolor}>LoginScreen</Text>
-      <GoogleSigninButton
-        style={{
-          width: '90%',
-          height: 55,
-          alignSelf: 'center',
-          marginTop: 500,
-        }}
-        size={GoogleSigninButton.Size.Wide}
-        color={GoogleSigninButton.Color.Dark}
-        onPress={() =>
-          onGoogleButtonPress().then(
-            console.log('User is now singed in with google!'),
-          )
-        }
-      />
+      <Google />
       <View>
         <Facebook />
       </View>
-      <Button title="frank" onPress={GetUser} />
+      <Button title="signOut" onPress={signOut} />
     </Screen>
   )
 }

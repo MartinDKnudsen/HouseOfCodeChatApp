@@ -14,23 +14,36 @@ import React from 'react'
 export default function WelcomeScreen({ navigate }) {
   const navigation = useNavigation()
   return (
-    <View style={styles.container}>
-      <Button title="Login" onPress={() => navigation.navigate('Login')} />
-      <Button
-        title="AccountScreen"
-        onPress={() => navigation.navigate('Account')}
-      />
-    </View>
+    <SafeAreaView>
+      <View style={styles.container}>
+        <Button
+          title="Login"
+          style={styles.loginButton}
+          onPress={() => navigation.navigate('Login')}
+        />
+      </View>
+      <View>
+        <Button
+          title="AccountScreen"
+          onPress={() => navigation.navigate('Account')}
+        />
+      </View>
+    </SafeAreaView>
   )
 }
 
 const styles = StyleSheet.create({
   container: {
     backgroundColor: '#fff',
-    marginTop: 30,
+    justifyContent: 'center',
+    marginTop: 550,
   },
   textcsadolor: {
     color: '#000',
     fontWeight: 'bold',
+  },
+  loginButton: {
+    flex: 1,
+    height: 30,
   },
 })
