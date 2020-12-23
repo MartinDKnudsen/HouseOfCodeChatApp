@@ -32,15 +32,6 @@ GoogleSignin.configure({
     '515325063656-6n4qup8tccj7q5cfldht2ngn623imebs.apps.googleusercontent.com',
 })
 
-const GetUser = async () => {
-  try {
-    const currentUser = await GoogleSignin.getCurrentUser()
-    console.log(currentUser.user.email)
-  } catch (error) {
-    console.log(error)
-  }
-}
-
 const GooglesignOut = async () => {
   try {
     await GoogleSignin.revokeAccess()
