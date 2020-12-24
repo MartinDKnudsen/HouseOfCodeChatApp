@@ -76,7 +76,7 @@ const GoogleLogin = () => {
       const response = await auth().signInWithCredential(googleCredential)
       SetAuthorised(true)
       const user = jwtDecode(idToken)
-      console.log(user)
+      authContext.setUser(user)
     } catch (error) {
       console.log(error)
     }

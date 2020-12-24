@@ -15,7 +15,6 @@ import {
 import { NavigationContainer, useNavigation } from '@react-navigation/native'
 import React, { useContext, useEffect, useState } from 'react'
 
-import { AuthContext } from '../navigation/AuthProvider'
 import Facebook from './FacebookLoginScreen'
 import Google from './GoogleLoginScreen'
 import Screen from './Screen'
@@ -54,6 +53,8 @@ const signOut = async () => {
 }
 
 const LoginScreen = () => {
+  const authContext = useContext(AuthContext)
+
   return (
     <Screen style={styles.container}>
       <Text style={styles.textcsadolor}>LoginScreen</Text>
