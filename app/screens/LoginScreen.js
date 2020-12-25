@@ -15,6 +15,7 @@ import {
 import { NavigationContainer, useNavigation } from '@react-navigation/native'
 import React, { useContext, useEffect, useState } from 'react'
 
+import AuthContext from '../auth/context'
 import Facebook from './FacebookLoginScreen'
 import Google from './GoogleLoginScreen'
 import Screen from './Screen'
