@@ -33,40 +33,15 @@ GoogleSignin.configure({
     '515325063656-6n4qup8tccj7q5cfldht2ngn623imebs.apps.googleusercontent.com',
 })
 
-const GetUser = async () => {
-  try {
-    const currentUser = await GoogleSignin.getCurrentUser()
-    console.log(currentUser.user.email)
-  } catch (error) {
-    console.log(error)
-  }
-}
-
-const GooglesignOut = async () => {
-  try {
-    await GoogleSignin.revokeAccess()
-    await GoogleSignin.signOut()
-    console.log('User is now signed out')
-  } catch (error) {
-    console.error(error)
-  }
-}
-
-const signOut = async () => {
-  auth()
-    .signOut()
-    .then(function () {
-      GooglesignOut()
-    })
-    .catch(function (error) {
-      // An error happened.
-    })
-}
-
+//const nullUser = async () => {
+//const { setUser } = useContext(AuthContext)
+//setUser(null)
+//}
 const GoogleLogin = () => {
   const authContext = useContext(AuthContext)
   const [IsAuthorised, SetAuthorised] = useState(false)
   const navigation = useNavigation()
+
   async function onGoogleButtonPress() {
     try {
       // Get the users ID token
@@ -85,12 +60,6 @@ const GoogleLogin = () => {
       console.log(error)
     }
   }
-  useEffect(() => {
-    if (IsAuthorised) {
-      // console.log(user) //Here i want to go to AppNavigator
-    }
-  }, [IsAuthorised])
-
   return (
     <View>
       <GoogleSigninButton
@@ -111,5 +80,4 @@ const GoogleLogin = () => {
     </View>
   )
 }
-
 export default GoogleLogin

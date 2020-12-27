@@ -43,7 +43,7 @@ const styles = StyleSheet.create({
     height: 30,
   },
   imageStyle: {
-    height: 500,
+    height: 600,
     width: '100%',
   },
 })

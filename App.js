@@ -8,7 +8,7 @@ import {
   View,
 } from 'react-native'
 import { NavigationContainer, useNavigation } from '@react-navigation/native'
-import React, { useContext, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 
 import AppNavigator from './app/navigation/AppNavigator'
 import AuthContext from './app/auth/context'
@@ -28,16 +28,7 @@ import firebase from 'firebase'
  */
 
 export default function App() {
-  // Set an initializing state whilst Firebase connects
-  const [initializing, setInitializing] = useState(true)
-  const [user, setUser] = useState()
-
-  // Handle user state changes
-  function onAuthStateChanged(user) {
-    setUser(user)
-    if (initializing) setInitializing(false)
-  }
-
+  const [user, setUser] = useState(null)
   return (
     <AuthContext.Provider value={{ user, setUser }}>
       <NavigationContainer>
@@ -48,3 +39,10 @@ export default function App() {
 }
 
 // {user ? <AppNavigator /> : <AuthNavigator />}
+
+// Set an initializing state whilst Firebase connects
+//const [initializing, setInitializing] = useState(true)
+//function onAuthStateChanged(user) {
+// setUser(user)
+// if (initializing) setInitializing(false)
+//}

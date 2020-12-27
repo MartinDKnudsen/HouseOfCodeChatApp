@@ -1,5 +1,6 @@
 import {
   Button,
+  Image,
   SafeAreaView,
   ScrollView,
   StatusBar,
@@ -15,25 +16,22 @@ import React, { useContext, useEffect, useState } from 'react'
 
 import AuthContext from '../auth/context'
 import GoogleData from './GoogleLoginScreen'
+import UserCard from '../components/userCard'
 import auth from '@react-native-firebase/auth'
-import { signOut } from './GoogleLoginScreen'
-
-const GetUser = async () => {
-  const currentUser = await GoogleSignin.getCurrentUser()
-  const userEmail = currentUser.user.email
-}
+import useAuth from '../auth/useAuth'
 
 function AccountScreen() {
-  const authContext = useContext(AuthContext)
-
+  const { user, setUser } = useContext(AuthContext)
   return (
-    <View style={styles.container}>
-      <Text style={styles.textcsadolor}>AccountScreen</Text>
-      <Button title="signOut" />
-    </View>
+    <SafeAreaView>
+      <UserCard
+        title={user.name}
+        subTitle={user.email}
+        image={(source = { uri: user.picture })}
+      />
+    </SafeAreaView>
   )
 }
-
 export default AccountScreen
 
 const styles = StyleSheet.create({
@@ -44,5 +42,9 @@ const styles = StyleSheet.create({
   textcsadolor: {
     color: '#000',
     fontWeight: 'bold',
+  },
+  imagestyle: {
+    height: 150,
+    width: 150,
   },
 })

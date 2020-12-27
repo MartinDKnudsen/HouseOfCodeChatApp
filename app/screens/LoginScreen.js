@@ -61,7 +61,6 @@ const LoginScreen = () => {
       <View>
         <Facebook />
       </View>
-      <Button title="signOut" onPress={signOut} />
     </Screen>
   )
 }
