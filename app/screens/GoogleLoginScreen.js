@@ -16,7 +16,7 @@ import { NavigationContainer, useNavigation } from '@react-navigation/native'
 import React, { Component, useContext, useEffect, useState } from 'react'
 
 import AppNavigator from '../navigation/AppNavigator'
-import { AuthContext } from '../navigation/AuthProvider'
+import AuthContext from '../auth/context'
 import Facebook from './FacebookLoginScreen'
 import Screen from './Screen'
 import auth from '@react-native-firebase/auth'
@@ -24,6 +24,7 @@ import firebase from 'firebase'
 import { firebaseCfg } from '../auth/firebase/config'
 import jwtDecode from 'jwt-decode'
 import routes from '../navigation/routes'
+import useAuth from '../auth/useAuth'
 
 GoogleSignin.configure({
   webClientId:
@@ -63,6 +64,7 @@ const signOut = async () => {
 }
 
 const GoogleLogin = () => {
+  const authContext = useContext(AuthContext)
   const [IsAuthorised, SetAuthorised] = useState(false)
   const navigation = useNavigation()
   async function onGoogleButtonPress() {
@@ -75,7 +77,9 @@ const GoogleLogin = () => {
       // Sign-in the user with the credential
       const response = await auth().signInWithCredential(googleCredential)
       SetAuthorised(true)
+
       const user = jwtDecode(idToken)
+      console.log(user)
       authContext.setUser(user)
     } catch (error) {
       console.log(error)
@@ -83,9 +87,10 @@ const GoogleLogin = () => {
   }
   useEffect(() => {
     if (IsAuthorised) {
-      navigation.navigate('Welcome')
+      // console.log(user) //Here i want to go to AppNavigator
     }
   }, [IsAuthorised])
+
   return (
     <View>
       <GoogleSigninButton

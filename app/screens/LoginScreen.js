@@ -54,8 +54,6 @@ const signOut = async () => {
 }
 
 const LoginScreen = () => {
-  const authContext = useContext(AuthContext)
-
   return (
     <Screen style={styles.container}>
       <Text style={styles.textcsadolor}>LoginScreen</Text>

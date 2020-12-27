@@ -11,23 +11,31 @@ import {
   GoogleSignin,
   GoogleSigninButton,
 } from '@react-native-community/google-signin'
+import React, { useContext, useEffect, useState } from 'react'
 
+import AuthContext from '../auth/context'
 import GoogleData from './GoogleLoginScreen'
-import React from 'react'
 import auth from '@react-native-firebase/auth'
+import { signOut } from './GoogleLoginScreen'
 
 const GetUser = async () => {
   const currentUser = await GoogleSignin.getCurrentUser()
-  console.log(currentUser.user.email)
+  const userEmail = currentUser.user.email
 }
 
-export default function AccountScreen() {
+function AccountScreen() {
+  const authContext = useContext(AuthContext)
+
   return (
     <View style={styles.container}>
       <Text style={styles.textcsadolor}>AccountScreen</Text>
+      <Button title="signOut" />
     </View>
   )
 }
+
+export default AccountScreen
+
 const styles = StyleSheet.create({
   container: {
     backgroundColor: '#fff',

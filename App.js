@@ -28,7 +28,15 @@ import firebase from 'firebase'
  */
 
 export default function App() {
+  // Set an initializing state whilst Firebase connects
+  const [initializing, setInitializing] = useState(true)
   const [user, setUser] = useState()
+
+  // Handle user state changes
+  function onAuthStateChanged(user) {
+    setUser(user)
+    if (initializing) setInitializing(false)
+  }
 
   return (
     <AuthContext.Provider value={{ user, setUser }}>
@@ -38,3 +46,5 @@ export default function App() {
     </AuthContext.Provider>
   )
 }
+
+// {user ? <AppNavigator /> : <AuthNavigator />}

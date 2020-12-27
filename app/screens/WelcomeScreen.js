@@ -1,5 +1,6 @@
 import {
   Button,
+  Image,
   SafeAreaView,
   ScrollView,
   StatusBar,
@@ -15,17 +16,12 @@ export default function WelcomeScreen({ navigate }) {
   const navigation = useNavigation()
   return (
     <SafeAreaView>
+      <Image style={styles.imageStyle} source={require('../Images/logo.png')} />
       <View style={styles.container}>
         <Button
           title="Login"
           style={styles.loginButton}
           onPress={() => navigation.navigate('Login')}
-        />
-      </View>
-      <View>
-        <Button
-          title="AccountScreen"
-          onPress={() => navigation.navigate('Account')}
         />
       </View>
     </SafeAreaView>
@@ -34,16 +30,20 @@ export default function WelcomeScreen({ navigate }) {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#fff',
+    backgroundColor: '#000',
     justifyContent: 'center',
-    marginTop: 550,
+    marginTop: 40,
+    height: 70,
   },
   textcsadolor: {
     color: '#000',
     fontWeight: 'bold',
   },
   loginButton: {
-    flex: 1,
     height: 30,
+  },
+  imageStyle: {
+    height: 500,
+    width: '100%',
   },
 })
