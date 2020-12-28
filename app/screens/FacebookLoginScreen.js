@@ -1,88 +1,44 @@
-import {
-  AccessToken,
-  GraphRequest,
-  GraphRequestManager,
-  LoginButton,
-} from 'react-native-fbsdk'
-import {
-  Button,
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  View,
-} from 'react-native'
-import React, { Component } from 'react'
+import { AccessToken, LoginManager } from 'react-native-fbsdk'
 
-export default class App extends Component {
-  state = { userInfo: {} }
+import { Button } from 'react-native'
+import React from 'react'
+import auth from '@react-native-firebase/auth'
 
-  getInfoFromToken = (token) => {
-    const PROFILE_REQUEST_PARAMS = {
-      fields: {
-        string: 'id, name,  first_name, last_name, ',
-      },
-    }
-    const profileRequest = new GraphRequest(
-      '/me',
-      { token, parameters: PROFILE_REQUEST_PARAMS },
-      (error, result) => {
-        if (error) {
-          console.log('login info has error: ' + error)
-        } else {
-          this.setState({ userInfo: result })
-          console.log('result:', result)
-        }
-      },
-    )
-    new GraphRequestManager().addRequest(profileRequest).start()
+async function onFacebookButtonPress() {
+  // Attempt login with permissions
+  const result = await LoginManager.logInWithPermissions([
+    'public_profile',
+    'email',
+  ])
+  if (result.isCancelled) {
+    throw 'User cancelled the login process'
   }
-
-  render() {
-    return (
-      <View style={styles.container}>
-        <LoginButton
-          style={{
-            width: '88%',
-            height: 50,
-            alignSelf: 'center',
-          }}
-          onLoginFinished={(error, result) => {
-            if (error) {
-              console.log('login has error: ' + result.error)
-            } else if (result.isCancelled) {
-              console.log('login is cancelled.')
-            } else {
-              AccessToken.getCurrentAccessToken().then((data) => {
-                const accessToken = data.accessToken.toString()
-                this.getInfoFromToken(accessToken)
-                console.log(accessToken)
-              })
-            }
-          }}
-          onLogoutFinished={() => this.setState({ userInfo: {} })}
-        />
-        {this.state.userInfo.name && (
-          <Text style={{ fontSize: 16, marginVertical: 16 }}>
-            Logged in As {this.state.userInfo.name}
-          </Text>
-        )}
-      </View>
-    )
+  // Once signed in, get the users AccesToken
+  const data = await AccessToken.getCurrentAccessToken()
+  if (!data) {
+    throw 'Something went wrong obtaining access token'
   }
+  // Create a Firebase credential with the AccessToken
+  const facebookCredential = auth.FacebookAuthProvider.credential(
+    data.accessToken,
+  )
+  console.log(data.accessToken.toString())
+  // const user = jwtDecode(data.accessToken)
+  //console.log(user)
+  // Sign-in the user with the credential
+  return auth().signInWithCredential(facebookCredential)
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flexDirection: 'column',
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#fff',
-    width: '100%',
-    height: 80,
-  },
-  buttonTextStyle: {
-    color: '#000',
-  },
-})
+function FacebookSignIn() {
+  return (
+    <Button
+      title="Facebook Sign-In"
+      onPress={() =>
+        onFacebookButtonPress().then(() =>
+          console.log('Signed in with Facebook!'),
+        )
+      }
+    />
+  )
+}
+export default FacebookSignIn

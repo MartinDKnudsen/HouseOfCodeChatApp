@@ -1,7 +1,9 @@
 import AccountScreen from '../screens/AccountScreen'
+import AddRoomScreen from '../screens/AddRoomScreen'
 import ChatScreen from '../screens/ChatScreen'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 import React from 'react'
+import RoomScreen from '../screens/RoomScreen'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 
 const Tab = createBottomTabNavigator()
@@ -26,6 +28,8 @@ const AppNavigator = () => (
         ),
       }}
     />
+    <Tab.Screen name="AddRoom" component={AddRoomScreen} />
+    <Tab.Screen name="Room" component={RoomScreen} />
   </Tab.Navigator>
 )
 
