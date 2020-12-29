@@ -91,7 +91,11 @@ function ChatApp() {
           ),
         })}
       />
-      <ChatAppStack.Screen name="Room" component={RoomScreen} />
+      <ChatAppStack.Screen
+        name="Room"
+        component={RoomScreen}
+        options={{ title: 'hello' }}
+      />
     </ChatAppStack.Navigator>
   )
 }

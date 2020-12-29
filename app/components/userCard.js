@@ -9,11 +9,9 @@ import {
 } from 'react-native'
 import React, { useContext } from 'react'
 
-import AuthContext from '../auth/context'
 import { GoogleSignin } from '@react-native-community/google-signin'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 import Swipeable from 'react-native-gesture-handler/Swipeable'
-import auth from '@react-native-firebase/auth'
 
 function userCard({
   title,
@@ -23,28 +21,6 @@ function userCard({
   onPress,
   renderRightActions,
 }) {
-  const { user, setUser } = useContext(AuthContext)
-  const signOut = async () => {
-    auth()
-      .signOut()
-      .then(function () {
-        GooglesignOut()
-      })
-      .catch(function (error) {
-        // An error happened.
-      })
-  }
-  const GooglesignOut = async () => {
-    try {
-      await GoogleSignin.revokeAccess()
-      await GoogleSignin.signOut()
-      setUser(null)
-      console.log('User is now signed out')
-    } catch (error) {
-      console.error(error)
-    }
-  }
-
   return (
     <SafeAreaView style={styles.safeContainer}>
       <View style={styles.container}>
@@ -60,7 +36,6 @@ function userCard({
             </Text>
           )}
         </View>
-        <Button title="SignOut" onPress={signOut} />
       </View>
     </SafeAreaView>
   )
@@ -85,15 +60,17 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   image: {
-    width: 70,
-    height: 70,
+    width: 100,
+    height: 100,
     borderRadius: 35,
   },
   subTitle: {
     color: '#000',
+    fontSize: 18,
   },
   title: {
     fontWeight: '500',
+    fontSize: 28,
   },
 })
 
