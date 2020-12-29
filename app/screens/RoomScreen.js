@@ -28,6 +28,7 @@ export default function RoomScreen({ route }) {
         user: {
           _id: user.name,
           email: user.email,
+          avatar: user.picture,
         },
       })
 
