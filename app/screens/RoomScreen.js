@@ -15,10 +15,8 @@ export default function RoomScreen({ route }) {
   const [messages, setMessages] = useState([])
   const { user } = useContext(AuthContext)
   const { chatRoom_id } = route.params
-  const MyUser = user.name
 
   async function handleSend(messages) {
-    console.log(MyUser)
     const text = messages[0].text
     firestore()
       .collection('Chats')
