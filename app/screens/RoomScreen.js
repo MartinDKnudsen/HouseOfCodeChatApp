@@ -1,34 +1,82 @@
 import { ActivityIndicator, StyleSheet, View } from 'react-native'
-import { Bubble, GiftedChat, Send } from 'react-native-gifted-chat'
-import React, { useContext, useState } from 'react'
+import {
+  Bubble,
+  GiftedChat,
+  Send,
+  SystemMessage,
+} from 'react-native-gifted-chat'
+import React, { useContext, useEffect, useState } from 'react'
 
 import AuthContext from '../auth/context'
 import { IconButton } from 'react-native-paper'
+import firestore from '@react-native-firebase/firestore'
 
-export default function RoomScreen() {
-  const [messages, setMessages] = useState([
-    /**
-     * Mock message data
-     */
-    // example of system message
-    {
-      _id: 0,
-      text: 'New room created.',
-      createdAt: new Date().getTime(),
-      system: true,
-    },
-    // example of chat message
-    {
-      _id: 1,
-      text: 'Henlo!',
-      createdAt: new Date().getTime(),
-      user: {
-        _id: 2,
-        name: 'Test User',
-      },
-    },
-  ])
-  const { user, setUser } = useContext(AuthContext)
+export default function RoomScreen({ navigation, route }) {
+  const [messages, setMessages] = useState([])
+  const { user } = useContext(AuthContext)
+  const chatRoom_id = route.params
+  async function handleSend(messages) {
+    const text = messages[0].text
+
+    firestore()
+      .collection('ChatRoom')
+      .doc(chatRoom_id)
+      .collection('messages')
+      .add({
+        text,
+        createdAt: new Date().getTime(),
+        user: {
+          _id: user.name,
+          email: user.email,
+        },
+      })
+    await firestore()
+      .collection('ChatRoom')
+      .doc(chatRoom_id)
+      .set(
+        {
+          latestMessage: {
+            text,
+            createdAt: new Date().getTime(),
+          },
+        },
+        { merge: true },
+      )
+  }
+
+  useEffect(() => {
+    const messagesListener = firestore()
+      .collection('ChatRoom')
+      .doc(chatRoom_id)
+      .collection('message')
+      .orderBy('createdAt', 'desc')
+      .onSnapshot((querySnapshot) => {
+        const messages = querySnapshot.docs.map((doc) => {
+          const firebaseData = doc.data()
+
+          const data = {
+            _id: doc.id,
+            text: '',
+            createdAt: new Date().getTime(),
+            ...firebaseData,
+          }
+
+          if (!firebaseData.system) {
+            data.user = {
+              ...firebaseData.user,
+              name: firebaseData.user.email,
+            }
+          }
+
+          return data
+        })
+
+        setMessages(messages)
+      })
+
+    // Stop listening for updates whenever the component unmounts
+    return () => messagesListener()
+  }, [])
 
   function renderBubble(props) {
     return (
@@ -49,7 +97,6 @@ export default function RoomScreen() {
       />
     )
   }
-
   function renderLoading() {
     return (
       <View style={styles.loadingContainer}>
@@ -78,12 +125,20 @@ export default function RoomScreen() {
   function handleSend(newMessage = []) {
     setMessages(GiftedChat.append(messages, newMessage))
   }
-
+  function renderSystemMessage(props) {
+    return (
+      <SystemMessage
+        {...props}
+        wrapperStyle={styles.systemMessageWrapper}
+        textStyle={styles.systemMessageText}
+      />
+    )
+  }
   return (
     <GiftedChat
       messages={messages}
-      onSend={(newMessage) => handleSend(newMessage)}
-      user={{ _id: 1, name: user.name }}
+      onSend={handleSend}
+      user={{ _id: user.name }}
       renderBubble={renderBubble}
       placeholder="Type your message here..."
       showUserAvatar
@@ -91,6 +146,7 @@ export default function RoomScreen() {
       renderSend={renderSend}
       scrollToBottom
       scrollToBottomComponent={scrollToBottomComponent}
+      renderSystemMessage={renderSystemMessage}
       renderLoading={renderLoading}
     />
   )

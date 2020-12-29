@@ -1,14 +1,30 @@
+import {
+  Button,
+  FlatList,
+  Image,
+  SafeAreaView,
+  ScrollView,
+  StatusBar,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native'
 import { Divider, List } from 'react-native-paper'
-import { FlatList, StyleSheet, TouchableOpacity, View } from 'react-native'
+import {
+  GoogleSignin,
+  GoogleSigninButton,
+} from '@react-native-community/google-signin'
 import React, { useContext, useEffect, useState } from 'react'
 
 import AuthContext from '../auth/context'
-import FormButton from '../components/FormButton'
+import GoogleData from './GoogleLoginScreen'
 import Loading from '../components/Loading'
-import { Title } from 'react-native-paper'
+import UserCard from '../components/userCard'
+import auth from '@react-native-firebase/auth'
 import firestore from '@react-native-firebase/firestore'
 
-export default function HomeScreen({ navigation }) {
+export default function MainScreen({ navigation }) {
   const { user, setUser } = useContext(AuthContext)
   const [chatroom, setChatRoom] = useState([])
   const [loading, setLoading] = useState(true)
@@ -53,10 +69,10 @@ export default function HomeScreen({ navigation }) {
         keyExtractor={(item) => item._id}
         ItemSeparatorComponent={() => <Divider />}
         renderItem={({ item }) => (
-          <TouchableOpacity onPress={() => navigation.navigate('Room')}>
+          <TouchableOpacity onPress={() => console.log(this.props)}>
             <List.Item
               title={item.name}
-              description="Item description"
+              description="Chat room description"
               titleNumberOfLines={1}
               titleStyle={styles.listTitle}
               descriptionStyle={styles.listDescription}

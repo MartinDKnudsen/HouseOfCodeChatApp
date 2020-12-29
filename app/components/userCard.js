@@ -72,7 +72,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     padding: 15,
     backgroundColor: '#fff',
-    marginTop: 100,
+    marginTop: 10,
   },
   safeContainer: {
     width: '100%',
