@@ -11,17 +11,19 @@ import AuthContext from '../auth/context'
 import { IconButton } from 'react-native-paper'
 import firestore from '@react-native-firebase/firestore'
 
-export default function RoomScreen({ navigation, route }) {
+export default function RoomScreen({ route }) {
   const [messages, setMessages] = useState([])
   const { user } = useContext(AuthContext)
-  const chatRoom_id = route.params
-  async function handleSend(messages) {
-    const text = messages[0].text
+  const { chatRoom_id } = route.params
+  const MyUser = user.name
 
+  async function handleSend(messages) {
+    console.log(MyUser)
+    const text = messages[0].text
     firestore()
-      .collection('ChatRoom')
+      .collection('Chats')
       .doc(chatRoom_id)
-      .collection('messages')
+      .collection('MESSAGES')
       .add({
         text,
         createdAt: new Date().getTime(),
@@ -30,8 +32,9 @@ export default function RoomScreen({ navigation, route }) {
           email: user.email,
         },
       })
+
     await firestore()
-      .collection('ChatRoom')
+      .collection('Chats')
       .doc(chatRoom_id)
       .set(
         {
@@ -46,9 +49,9 @@ export default function RoomScreen({ navigation, route }) {
 
   useEffect(() => {
     const messagesListener = firestore()
-      .collection('ChatRoom')
+      .collection('Chats')
       .doc(chatRoom_id)
-      .collection('message')
+      .collection('MESSAGES')
       .orderBy('createdAt', 'desc')
       .onSnapshot((querySnapshot) => {
         const messages = querySnapshot.docs.map((doc) => {
@@ -80,12 +83,10 @@ export default function RoomScreen({ navigation, route }) {
 
   function renderBubble(props) {
     return (
-      // Step 3: return the component
       <Bubble
         {...props}
         wrapperStyle={{
           right: {
-            // Here is the color change
             backgroundColor: '#6646ee',
           },
         }}
@@ -97,6 +98,7 @@ export default function RoomScreen({ navigation, route }) {
       />
     )
   }
+
   function renderLoading() {
     return (
       <View style={styles.loadingContainer}>
@@ -104,6 +106,7 @@ export default function RoomScreen({ navigation, route }) {
       </View>
     )
   }
+
   function renderSend(props) {
     return (
       <Send {...props}>
@@ -113,6 +116,7 @@ export default function RoomScreen({ navigation, route }) {
       </Send>
     )
   }
+
   function scrollToBottomComponent() {
     return (
       <View style={styles.bottomComponentContainer}>
@@ -121,10 +125,6 @@ export default function RoomScreen({ navigation, route }) {
     )
   }
 
-  // helper method that is sends a message
-  function handleSend(newMessage = []) {
-    setMessages(GiftedChat.append(messages, newMessage))
-  }
   function renderSystemMessage(props) {
     return (
       <SystemMessage
@@ -134,36 +134,48 @@ export default function RoomScreen({ navigation, route }) {
       />
     )
   }
+
   return (
     <GiftedChat
       messages={messages}
       onSend={handleSend}
       user={{ _id: user.name }}
-      renderBubble={renderBubble}
       placeholder="Type your message here..."
-      showUserAvatar
       alwaysShowSend
-      renderSend={renderSend}
+      showUserAvatar
+      showAvatarForEveryMessage
       scrollToBottom
+      renderBubble={renderBubble}
+      renderLoading={renderLoading}
+      renderSend={renderSend}
       scrollToBottomComponent={scrollToBottomComponent}
       renderSystemMessage={renderSystemMessage}
-      renderLoading={renderLoading}
     />
   )
 }
 
 const styles = StyleSheet.create({
-  sendingContainer: {
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
   loadingContainer: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
   },
+  sendingContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   bottomComponentContainer: {
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  systemMessageWrapper: {
+    backgroundColor: '#6646ee',
+    borderRadius: 4,
+    padding: 5,
+  },
+  systemMessageText: {
+    fontSize: 14,
+    color: '#fff',
+    fontWeight: 'bold',
   },
 })

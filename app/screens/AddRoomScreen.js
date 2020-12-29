@@ -17,7 +17,7 @@ export default function AddRoomScreen({ navigation }) {
   function handleButtonPress() {
     if (roomName.length > 0) {
       firestore()
-        .collection('ChatRoom')
+        .collection('Chats')
         .add({
           name: roomName,
           latestMessage: {
@@ -27,7 +27,7 @@ export default function AddRoomScreen({ navigation }) {
         })
         .then((docRef) => {
           docRef.collection('MESSAGES').add({
-            text: `You have joined the room ${roomName}.`,
+            text: `This is room: ${roomName}.`,
             createdAt: new Date().getTime(),
             system: true,
           })
@@ -39,9 +39,9 @@ export default function AddRoomScreen({ navigation }) {
     <View style={styles.rootContainer}>
       <View style={styles.closeButtonContainer}>
         <IconButton
-          icon="close"
+          icon="close-circle"
           size={36}
-          color="#118793"
+          color="#6646ee"
           onPress={() => navigation.goBack()}
         />
       </View>

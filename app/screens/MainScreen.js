@@ -33,8 +33,8 @@ export default function MainScreen({ navigation }) {
    */
   useEffect(() => {
     const unsubscribe = firestore()
-      .collection('ChatRoom')
-      // .orderBy('latestMessage.createdAt', 'desc')
+      .collection('Chats')
+      .orderBy('latestMessage.createdAt', 'desc')
       .onSnapshot((querySnapshot) => {
         const chatroom = querySnapshot.docs.map((documentSnapshot) => {
           return {
@@ -69,7 +69,10 @@ export default function MainScreen({ navigation }) {
         keyExtractor={(item) => item._id}
         ItemSeparatorComponent={() => <Divider />}
         renderItem={({ item }) => (
-          <TouchableOpacity onPress={() => console.log(this.props)}>
+          <TouchableOpacity
+            onPress={() =>
+              navigation.navigate('Room', { chatRoom_id: item.name })
+            }>
             <List.Item
               title={item.name}
               description="Chat room description"
