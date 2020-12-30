@@ -10,11 +10,13 @@ import React, { useContext, useEffect, useState } from 'react'
 import AuthContext from '../auth/context'
 import { IconButton } from 'react-native-paper'
 import firestore from '@react-native-firebase/firestore'
+import useStatsBar from '../utils/useStatusBar'
 
 export default function RoomScreen({ route }) {
   const [messages, setMessages] = useState([])
   const { user } = useContext(AuthContext)
   const { chatRoom_id } = route.params
+  useStatsBar('light-content')
 
   async function handleSend(messages) {
     const text = messages[0].text

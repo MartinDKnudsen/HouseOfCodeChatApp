@@ -19,7 +19,7 @@ const ModalStack = createStackNavigator()
  */
 
 function ChatApp() {
-  const { user, setUser } = useContext(AuthContext)
+  const [user, setUser] = useContext(AuthContext)
 
   //************Sign user out of app****************
   const signOut = async () => {

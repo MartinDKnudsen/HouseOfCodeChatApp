@@ -23,11 +23,13 @@ import Loading from '../components/Loading'
 import UserCard from '../components/userCard'
 import auth from '@react-native-firebase/auth'
 import firestore from '@react-native-firebase/firestore'
+import useStatsBar from '../utils/useStatusBar'
 
 export default function MainScreen({ navigation }) {
   const { user, setUser } = useContext(AuthContext)
   const [chatroom, setChatRoom] = useState([])
   const [loading, setLoading] = useState(true)
+  useStatsBar('light-content')
   /**
    * Fetch messages from Firestore
    */
