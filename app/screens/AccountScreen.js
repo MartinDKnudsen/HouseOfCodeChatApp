@@ -19,8 +19,8 @@ import GoogleData from './GoogleLoginScreen'
 import UserCard from '../components/userCard'
 import auth from '@react-native-firebase/auth'
 
-function AccountScreen() {
-  const { user, setUser } = useContext(AuthContext)
+export default function AccountScreen() {
+  const { user } = useContext(AuthContext)
   return (
     <SafeAreaView>
       <UserCard
@@ -31,7 +31,6 @@ function AccountScreen() {
     </SafeAreaView>
   )
 }
-export default AccountScreen
 
 const styles = StyleSheet.create({
   container: {

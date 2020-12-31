@@ -1,14 +1,19 @@
 import { IconButton, Title } from 'react-native-paper'
 import React, { useState } from 'react'
-import { StyleSheet, Text, View } from 'react-native'
+import { StyleSheet, View } from 'react-native'
 
 import FormButton from '../components/FormButton'
 import FormInput from '../components/FormInput'
 import firestore from '@react-native-firebase/firestore'
+import useStatsBar from '../utils/useStatusBar'
 
 export default function AddRoomScreen({ navigation }) {
+  useStatsBar('dark-content')
   const [roomName, setRoomName] = useState('')
-  // ... Firestore query will come here later
+
+  /**
+   * Create a new Firestore collection to save threads
+   */
   function handleButtonPress() {
     if (roomName.length > 0) {
       firestore()
@@ -26,7 +31,7 @@ export default function AddRoomScreen({ navigation }) {
             createdAt: new Date().getTime(),
             system: true,
           })
-          navigation.navigate('ChatRoom')
+          navigation.navigate('Main')
         })
     }
   }
@@ -63,12 +68,12 @@ export default function AddRoomScreen({ navigation }) {
 const styles = StyleSheet.create({
   rootContainer: {
     flex: 1,
+    marginBottom: 80,
   },
   closeButtonContainer: {
-    position: 'absolute',
     top: 30,
     right: 0,
-    zIndex: 1,
+    marginLeft: 300,
   },
   innerContainer: {
     flex: 1,
@@ -78,6 +83,8 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 24,
     marginBottom: 10,
+    color: '#118793',
+    fontWeight: 'bold',
   },
   buttonLabel: {
     fontSize: 22,

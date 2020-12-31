@@ -1,43 +1,93 @@
 import { ActivityIndicator, StyleSheet, View } from 'react-native'
-import { Bubble, GiftedChat, Send } from 'react-native-gifted-chat'
-import React, { useContext, useState } from 'react'
+import {
+  Bubble,
+  GiftedChat,
+  Send,
+  SystemMessage,
+} from 'react-native-gifted-chat'
+import React, { useContext, useEffect, useState } from 'react'
 
 import AuthContext from '../auth/context'
 import { IconButton } from 'react-native-paper'
+import firestore from '@react-native-firebase/firestore'
+import useStatsBar from '../utils/useStatusBar'
 
-export default function RoomScreen() {
-  const [messages, setMessages] = useState([
-    /**
-     * Mock message data
-     */
-    // example of system message
-    {
-      _id: 0,
-      text: 'New room created.',
-      createdAt: new Date().getTime(),
-      system: true,
-    },
-    // example of chat message
-    {
-      _id: 1,
-      text: 'Henlo!',
-      createdAt: new Date().getTime(),
-      user: {
-        _id: 2,
-        name: 'Test User',
-      },
-    },
-  ])
-  const { user, setUser } = useContext(AuthContext)
+export default function RoomScreen({ route }) {
+  const [messages, setMessages] = useState([])
+  const { user } = useContext(AuthContext)
+  const { chatRoom_id } = route.params
+  useStatsBar('light-content')
+
+  async function handleSend(messages) {
+    const text = messages[0].text
+    firestore()
+      .collection('Chats')
+      .doc(chatRoom_id)
+      .collection('MESSAGES')
+      .add({
+        text,
+        createdAt: new Date().getTime(),
+        user: {
+          _id: user.name,
+          email: user.email,
+          avatar: user.picture,
+        },
+      })
+
+    await firestore()
+      .collection('Chats')
+      .doc(chatRoom_id)
+      .set(
+        {
+          latestMessage: {
+            text,
+            createdAt: new Date().getTime(),
+          },
+        },
+        { merge: true },
+      )
+  }
+
+  useEffect(() => {
+    const messagesListener = firestore()
+      .collection('Chats')
+      .doc(chatRoom_id)
+      .collection('MESSAGES')
+      .orderBy('createdAt', 'desc')
+      .onSnapshot((querySnapshot) => {
+        const messages = querySnapshot.docs.map((doc) => {
+          const firebaseData = doc.data()
+
+          const data = {
+            _id: doc.id,
+            text: '',
+            createdAt: new Date().getTime(),
+            ...firebaseData,
+          }
+
+          if (!firebaseData.system) {
+            data.user = {
+              ...firebaseData.user,
+              name: firebaseData.user.email,
+            }
+          }
+
+          return data
+        })
+
+        setMessages(messages)
+      })
+
+    // Stop listening for updates whenever the component unmounts
+    return () => messagesListener()
+  }, [])
 
   function renderBubble(props) {
     return (
-      // Step 3: return the component
       <Bubble
         {...props}
         wrapperStyle={{
           right: {
-            // Here is the color change
             backgroundColor: '#6646ee',
           },
         }}
@@ -57,6 +107,7 @@ export default function RoomScreen() {
       </View>
     )
   }
+
   function renderSend(props) {
     return (
       <Send {...props}>
@@ -66,6 +117,7 @@ export default function RoomScreen() {
       </Send>
     )
   }
+
   function scrollToBottomComponent() {
     return (
       <View style={styles.bottomComponentContainer}>
@@ -74,40 +126,57 @@ export default function RoomScreen() {
     )
   }
 
-  // helper method that is sends a message
-  function handleSend(newMessage = []) {
-    setMessages(GiftedChat.append(messages, newMessage))
+  function renderSystemMessage(props) {
+    return (
+      <SystemMessage
+        {...props}
+        wrapperStyle={styles.systemMessageWrapper}
+        textStyle={styles.systemMessageText}
+      />
+    )
   }
 
   return (
     <GiftedChat
       messages={messages}
-      onSend={(newMessage) => handleSend(newMessage)}
-      user={{ _id: 1, name: user.name }}
-      renderBubble={renderBubble}
+      onSend={handleSend}
+      user={{ _id: user.name }}
       placeholder="Type your message here..."
-      showUserAvatar
       alwaysShowSend
-      renderSend={renderSend}
+      showUserAvatar
+      showAvatarForEveryMessage
       scrollToBottom
-      scrollToBottomComponent={scrollToBottomComponent}
+      renderBubble={renderBubble}
       renderLoading={renderLoading}
+      renderSend={renderSend}
+      scrollToBottomComponent={scrollToBottomComponent}
+      renderSystemMessage={renderSystemMessage}
     />
   )
 }
 
 const styles = StyleSheet.create({
-  sendingContainer: {
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
   loadingContainer: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
   },
+  sendingContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   bottomComponentContainer: {
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  systemMessageWrapper: {
+    backgroundColor: '#6646ee',
+    borderRadius: 4,
+    padding: 5,
+  },
+  systemMessageText: {
+    fontSize: 14,
+    color: '#fff',
+    fontWeight: 'bold',
   },
 })

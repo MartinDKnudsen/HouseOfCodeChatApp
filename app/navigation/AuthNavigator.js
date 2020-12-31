@@ -1,4 +1,3 @@
-import AccountScreen from '../screens/AccountScreen'
 import { AppNavigator } from './AppNavigator'
 import ChatScreen from '../screens/ChatScreen'
 import LoginScreen from '../screens/LoginScreen'
