@@ -31,7 +31,7 @@ export default function AddRoomScreen({ navigation }) {
             createdAt: new Date().getTime(),
             system: true,
           })
-          navigation.navigate('Main')
+          navigation.navigate('Home')
         })
     }
   }
@@ -39,9 +39,9 @@ export default function AddRoomScreen({ navigation }) {
     <View style={styles.rootContainer}>
       <View style={styles.closeButtonContainer}>
         <IconButton
-          icon="close-circle"
-          size={36}
-          color="#6646ee"
+          icon="close"
+          size={45}
+          color="#3c7d52"
           onPress={() => navigation.goBack()}
         />
       </View>
@@ -71,9 +71,8 @@ const styles = StyleSheet.create({
     marginBottom: 80,
   },
   closeButtonContainer: {
-    top: 30,
-    right: 0,
-    marginLeft: 300,
+    top: 2,
+    marginLeft: 325,
   },
   innerContainer: {
     flex: 1,

@@ -27,13 +27,13 @@ import firebase from 'firebase'
  * @format
  * @flow strict-local
  */
-
 export default function App() {
+  const [user, setUser] = useState(null)
+
   useEffect(() => {
     RNBootSplash.hide({ duration: 500, fade: true })
   }, [])
 
-  const [user, setUser] = useState(null)
   return (
     <AuthContext.Provider value={{ user, setUser }}>
       <NavigationContainer>
@@ -44,10 +44,3 @@ export default function App() {
 }
 
 // {user ? <AppNavigator /> : <AuthNavigator />}
-
-// Set an initializing state whilst Firebase connects
-//const [initializing, setInitializing] = useState(true)
-//function onAuthStateChanged(user) {
-// setUser(user)
-// if (initializing) setInitializing(false)
-//}

@@ -69,7 +69,7 @@ export default function MainScreen({ navigation }) {
       <FlatList
         data={chatroom}
         keyExtractor={(item) => item._id}
-        ItemSeparatorComponent={() => <Divider />}
+        ItemSeparatorComponent={() => <Divider style={styles.divider} />}
         renderItem={({ item }) => (
           <TouchableOpacity
             onPress={() =>
@@ -92,13 +92,19 @@ export default function MainScreen({ navigation }) {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#f5f5f5',
+    backgroundColor: '#000',
     flex: 1,
   },
   listTitle: {
-    fontSize: 22,
+    fontSize: 26,
+    color: '#fff',
   },
   listDescription: {
-    fontSize: 16,
+    fontSize: 18,
+    color: '#fff',
+  },
+  divider: {
+    height: 1,
+    backgroundColor: '#10a9e0',
   },
 })
