@@ -38,6 +38,7 @@ GoogleSignin.configure({
 //setUser(null)
 //}
 const GoogleLogin = () => {
+  const [user, setUser] = useState()
   const authContext = useContext(AuthContext)
   const [IsAuthorised, SetAuthorised] = useState(false)
   const navigation = useNavigation()

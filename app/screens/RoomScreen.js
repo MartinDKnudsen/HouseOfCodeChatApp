@@ -1,4 +1,4 @@
-import { ActivityIndicator, StyleSheet, View } from 'react-native'
+import { ActivityIndicator, StyleSheet, Text, View } from 'react-native'
 import {
   Bubble,
   GiftedChat,
@@ -68,7 +68,7 @@ export default function RoomScreen({ route }) {
           if (!firebaseData.system) {
             data.user = {
               ...firebaseData.user,
-              name: firebaseData.user.email,
+              name: firebaseData.user._id,
             }
           }
 
@@ -84,19 +84,21 @@ export default function RoomScreen({ route }) {
 
   function renderBubble(props) {
     return (
-      <Bubble
-        {...props}
-        wrapperStyle={{
-          right: {
-            backgroundColor: '#6646ee',
-          },
-        }}
-        textStyle={{
-          right: {
-            color: '#fff',
-          },
-        }}
-      />
+      <View>
+        <Bubble
+          {...props}
+          wrapperStyle={{
+            right: {
+              backgroundColor: '#0078FF',
+            },
+          }}
+          textStyle={{
+            right: {
+              color: '#fff',
+            },
+          }}
+        />
+      </View>
     )
   }
 
@@ -112,7 +114,7 @@ export default function RoomScreen({ route }) {
     return (
       <Send {...props}>
         <View style={styles.sendingContainer}>
-          <IconButton icon="send-circle" size={32} color="#6646ee" />
+          <IconButton icon="send-circle" size={32} color="#0078FF" />
         </View>
       </Send>
     )
@@ -144,6 +146,7 @@ export default function RoomScreen({ route }) {
       placeholder="Type your message here..."
       alwaysShowSend
       showUserAvatar
+      renderUsernameOnMessage
       showAvatarForEveryMessage
       scrollToBottom
       renderBubble={renderBubble}
@@ -151,6 +154,7 @@ export default function RoomScreen({ route }) {
       renderSend={renderSend}
       scrollToBottomComponent={scrollToBottomComponent}
       renderSystemMessage={renderSystemMessage}
+      renderScrollComponent
     />
   )
 }
@@ -170,7 +174,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   systemMessageWrapper: {
-    backgroundColor: '#6646ee',
+    backgroundColor: '#000000',
     borderRadius: 4,
     padding: 5,
   },
@@ -178,5 +182,11 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#fff',
     fontWeight: 'bold',
+  },
+  UsernameText: {
+    color: '#000',
+    fontSize: 12,
+    textAlign: 'right',
+    alignSelf: 'stretch',
   },
 })

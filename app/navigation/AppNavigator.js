@@ -9,6 +9,7 @@ import { IconButton } from 'react-native-paper'
 import MainScreen from '../screens/MainScreen'
 import RoomScreen from '../screens/RoomScreen'
 import auth from '@react-native-firebase/auth'
+import colors from '../config/colors'
 import { createStackNavigator } from '@react-navigation/stack'
 
 const ChatAppStack = createStackNavigator()
@@ -19,7 +20,7 @@ const ModalStack = createStackNavigator()
  */
 
 function ChatApp() {
-  const [user, setUser] = useContext(AuthContext)
+  const { user, setUser } = useContext(AuthContext)
 
   //************Sign user out of app****************
   const signOut = async () => {
@@ -48,7 +49,7 @@ function ChatApp() {
     <ChatAppStack.Navigator
       screenOptions={{
         headerStyle: {
-          backgroundColor: '#118793',
+          backgroundColor: '#10a9e0',
         },
         headerTintColor: '#ffffff',
         headerTitleStyle: {
@@ -56,14 +57,14 @@ function ChatApp() {
         },
       }}>
       <ChatAppStack.Screen
-        name="Main"
+        name="Home"
         component={MainScreen}
         options={({ navigation }) => ({
           headerRight: () => (
             <IconButton
               icon="message-plus"
               size={28}
-              color="#ffffff"
+              color={colors.white}
               onPress={() => navigation.navigate('AddRoom')}
             />
           ),
@@ -71,7 +72,7 @@ function ChatApp() {
             <IconButton
               icon="account"
               size={28}
-              color="#ffffff"
+              color={colors.white}
               onPress={() => navigation.navigate('Account')}
             />
           ),
@@ -85,7 +86,7 @@ function ChatApp() {
             <IconButton
               icon="logout"
               size={28}
-              color="#ffffff"
+              color={colors.white}
               onPress={() => signOut()}
             />
           ),

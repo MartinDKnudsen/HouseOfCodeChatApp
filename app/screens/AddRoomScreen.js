@@ -10,16 +10,14 @@ import useStatsBar from '../utils/useStatusBar'
 export default function AddRoomScreen({ navigation }) {
   useStatsBar('dark-content')
   const [roomName, setRoomName] = useState('')
-
-  /**
-   * Create a new Firestore collection to save threads
-   */
+  const [description, setDescription] = useState('')
   function handleButtonPress() {
     if (roomName.length > 0) {
       firestore()
         .collection('Chats')
         .add({
           name: roomName,
+          description,
           latestMessage: {
             text: `You have joined the room ${roomName}.`,
             createdAt: new Date().getTime(),
@@ -31,7 +29,7 @@ export default function AddRoomScreen({ navigation }) {
             createdAt: new Date().getTime(),
             system: true,
           })
-          navigation.navigate('Main')
+          navigation.navigate('Home')
         })
     }
   }
@@ -39,9 +37,9 @@ export default function AddRoomScreen({ navigation }) {
     <View style={styles.rootContainer}>
       <View style={styles.closeButtonContainer}>
         <IconButton
-          icon="close-circle"
-          size={36}
-          color="#6646ee"
+          icon="close"
+          size={45}
+          color="#3c7d52"
           onPress={() => navigation.goBack()}
         />
       </View>
@@ -52,6 +50,11 @@ export default function AddRoomScreen({ navigation }) {
           value={roomName}
           onChangeText={(text) => setRoomName(text)}
           clearButtonMode="while-editing"
+        />
+        <FormInput
+          Labelname="Description"
+          value={description}
+          onChangeText={(text) => setDescription(text)}
         />
         <FormButton
           title="Create"
@@ -71,9 +74,8 @@ const styles = StyleSheet.create({
     marginBottom: 80,
   },
   closeButtonContainer: {
-    top: 30,
-    right: 0,
-    marginLeft: 300,
+    top: 2,
+    marginLeft: 325,
   },
   innerContainer: {
     flex: 1,
