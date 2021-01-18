@@ -18,7 +18,7 @@ export default function HomeScreen({ navigation }) {
   useEffect(() => {
     const unsubscribe = firestore()
       .collection('ChatRoom')
-      // .orderBy('latestMessage.createdAt', 'desc')
+      .orderBy('latestMessage.createdAt', 'desc')
       .onSnapshot((querySnapshot) => {
         const chatroom = querySnapshot.docs.map((documentSnapshot) => {
           return {
