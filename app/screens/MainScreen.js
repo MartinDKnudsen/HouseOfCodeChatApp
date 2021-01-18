@@ -77,7 +77,7 @@ export default function MainScreen({ navigation }) {
             }>
             <List.Item
               title={item.name}
-              description={item.latestMessage.text}
+              description={item.description}
               titleNumberOfLines={1}
               titleStyle={styles.listTitle}
               descriptionStyle={styles.listDescription}
@@ -92,16 +92,16 @@ export default function MainScreen({ navigation }) {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#000',
+    backgroundColor: '#fff',
     flex: 1,
   },
   listTitle: {
     fontSize: 26,
-    color: '#fff',
+    color: '#000',
   },
   listDescription: {
     fontSize: 18,
-    color: '#fff',
+    color: '#696969',
   },
   divider: {
     height: 1,

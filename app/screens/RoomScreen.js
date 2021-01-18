@@ -154,6 +154,7 @@ export default function RoomScreen({ route }) {
       renderSend={renderSend}
       scrollToBottomComponent={scrollToBottomComponent}
       renderSystemMessage={renderSystemMessage}
+      renderScrollComponent
     />
   )
 }

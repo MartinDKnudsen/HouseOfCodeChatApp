@@ -42,5 +42,3 @@ export default function App() {
     </AuthContext.Provider>
   )
 }
-
-// {user ? <AppNavigator /> : <AuthNavigator />}

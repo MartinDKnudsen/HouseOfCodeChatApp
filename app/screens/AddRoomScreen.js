@@ -10,16 +10,14 @@ import useStatsBar from '../utils/useStatusBar'
 export default function AddRoomScreen({ navigation }) {
   useStatsBar('dark-content')
   const [roomName, setRoomName] = useState('')
-
-  /**
-   * Create a new Firestore collection to save threads
-   */
+  const [description, setDescription] = useState('')
   function handleButtonPress() {
     if (roomName.length > 0) {
       firestore()
         .collection('Chats')
         .add({
           name: roomName,
+          description,
           latestMessage: {
             text: `You have joined the room ${roomName}.`,
             createdAt: new Date().getTime(),
@@ -52,6 +50,11 @@ export default function AddRoomScreen({ navigation }) {
           value={roomName}
           onChangeText={(text) => setRoomName(text)}
           clearButtonMode="while-editing"
+        />
+        <FormInput
+          Labelname="Description"
+          value={description}
+          onChangeText={(text) => setDescription(text)}
         />
         <FormButton
           title="Create"
