@@ -91,6 +91,6 @@ const styles = StyleSheet.create({
   },
   buttonLabel: {
     fontSize: 22,
-    color: '#118793',
+    color: '#fff',
   },
 })

@@ -54,9 +54,6 @@ export default function MainScreen({ navigation }) {
         }
       })
 
-    /**
-     * unsubscribe listener
-     */
     return () => unsubscribe()
   }, [])
 
