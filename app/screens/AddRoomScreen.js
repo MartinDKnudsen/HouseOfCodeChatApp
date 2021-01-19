@@ -55,6 +55,7 @@ export default function AddRoomScreen({ navigation }) {
           labelName="Description"
           value={description}
           onChangeText={(text) => setDescription(text)}
+          clearButtonMode="while-editing"
         />
         <FormButton
           title="Create"

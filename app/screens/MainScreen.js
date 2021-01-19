@@ -10,7 +10,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native'
-import { Divider, List } from 'react-native-paper'
+import { Divider, Icon, List } from 'react-native-paper'
 import {
   GoogleSignin,
   GoogleSigninButton,
@@ -67,6 +67,8 @@ export default function MainScreen({ navigation }) {
   return (
     <View style={styles.container}>
       <FlatList
+        refreshing
+        onRefresh={console.log('swag')}
         data={chatroom}
         keyExtractor={(item) => item._id}
         ItemSeparatorComponent={() => <Divider style={styles.divider} />}
@@ -82,6 +84,9 @@ export default function MainScreen({ navigation }) {
               titleStyle={styles.listTitle}
               descriptionStyle={styles.listDescription}
               descriptionNumberOfLines={1}
+              right={(props) => (
+                <List.Icon {...props} color="#10a9e0" icon="chevron-right" />
+              )}
             />
           </TouchableOpacity>
         )}
@@ -106,5 +111,8 @@ const styles = StyleSheet.create({
   divider: {
     height: 1,
     backgroundColor: '#10a9e0',
+  },
+  iconStyles: {
+    color: '#10a9e0',
   },
 })
