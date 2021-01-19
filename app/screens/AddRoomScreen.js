@@ -52,9 +52,10 @@ export default function AddRoomScreen({ navigation }) {
           clearButtonMode="while-editing"
         />
         <FormInput
-          Labelname="Description"
+          labelName="Description"
           value={description}
           onChangeText={(text) => setDescription(text)}
+          clearButtonMode="while-editing"
         />
         <FormButton
           title="Create"
@@ -90,5 +91,6 @@ const styles = StyleSheet.create({
   },
   buttonLabel: {
     fontSize: 22,
+    color: '#118793',
   },
 })
