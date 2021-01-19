@@ -9,6 +9,7 @@ import React, { useContext, useEffect, useState } from 'react'
 
 import AuthContext from '../auth/context'
 import { IconButton } from 'react-native-paper'
+import colors from '../config/colors'
 import firestore from '@react-native-firebase/firestore'
 import useStatsBar from '../utils/useStatusBar'
 
@@ -54,8 +55,9 @@ export default function RoomScreen({ route }) {
       .doc(chatRoom_id)
       .collection('MESSAGES')
       .orderBy('createdAt', 'desc')
+      .limit(50)
       .onSnapshot((querySnapshot) => {
-        const messages = querySnapshot.docs.map((doc) => {
+        const messagesFromFirebase = querySnapshot.docs.map((doc) => {
           const firebaseData = doc.data()
 
           const data = {
@@ -75,7 +77,7 @@ export default function RoomScreen({ route }) {
           return data
         })
 
-        setMessages(messages)
+        setMessages(messagesFromFirebase)
       })
 
     // Stop listening for updates whenever the component unmounts
@@ -89,13 +91,15 @@ export default function RoomScreen({ route }) {
           {...props}
           wrapperStyle={{
             right: {
-              backgroundColor: '#0078FF',
+              backgroundColor: colors.rightBubble,
             },
+            left: { backgroundColor: colors.leftBubble },
           }}
           textStyle={{
             right: {
               color: '#fff',
             },
+            left: { color: '#fff' },
           }}
         />
       </View>
@@ -123,7 +127,7 @@ export default function RoomScreen({ route }) {
   function scrollToBottomComponent() {
     return (
       <View style={styles.bottomComponentContainer}>
-        <IconButton icon="chevron-double-down" size={36} color="#6646ee" />
+        <IconButton icon="chevron-double-down" size={36} color="#000" />
       </View>
     )
   }
