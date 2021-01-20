@@ -177,11 +177,19 @@ export default function RoomScreen({ route }) {
 
   const handlePickImage = async () => {
     try {
-      const result = await launchImageLibrary()
-      if (!result.cancelled) setImageUri(result.uri)
-    } catch (error) {
-      console.log(error)
-    }
+      const result = await ImagePicker.launchImageLibrary()
+    } catch (error) {}
+    console.log(result)
+  }
+
+  function handleImgSend(props) {
+    return (
+      <SystemMessage
+        {...props}
+        wrapperStyle={styles.systemMessageWrapper}
+        textStyle={styles.systemMessageText}
+      />
+    )
   }
 
   function renderActions(props) {
