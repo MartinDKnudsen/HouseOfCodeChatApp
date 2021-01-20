@@ -1,19 +1,28 @@
-import { ActivityIndicator, StyleSheet, Text, View } from 'react-native'
 import {
+  Actions,
+  ActionsProps,
   Bubble,
   GiftedChat,
   Send,
   SystemMessage,
 } from 'react-native-gifted-chat'
+import { ActivityIndicator, Icon, StyleSheet, Text, View } from 'react-native'
+import {
+  ImagePicker,
+  launchCamera,
+  launchImageLibrary,
+} from 'react-native-image-picker'
 import React, { useContext, useEffect, useState } from 'react'
 
 import AuthContext from '../auth/context'
 import { IconButton } from 'react-native-paper'
+import colors from '../config/colors'
 import firestore from '@react-native-firebase/firestore'
 import useStatsBar from '../utils/useStatusBar'
 
 export default function RoomScreen({ route }) {
   const [messages, setMessages] = useState([])
+  const [imageUri, setImageUri] = useState()
   const { user } = useContext(AuthContext)
   const { chatRoom_id } = route.params
   useStatsBar('light-content')
@@ -33,6 +42,31 @@ export default function RoomScreen({ route }) {
           avatar: user.picture,
         },
       })
+
+    async function handleImageSend(messages) {
+      const image = message[0].image
+      firestore()
+        .collection('Chats')
+        .doc(chatRoom_id)
+        .collection('MESSAGES')
+        .add({
+          image,
+          createdAt: new Date().getTime(),
+          user: {
+            _id: user.name,
+            email: user.email,
+            avatar: user.picture,
+          },
+        })
+    }
+
+    const selectImage = async () => {
+      try {
+        const result = await ImagePicker.launchImageLibraryAsync()
+      } catch (error) {
+        console.log(error)
+      }
+    }
 
     await firestore()
       .collection('Chats')
@@ -54,8 +88,9 @@ export default function RoomScreen({ route }) {
       .doc(chatRoom_id)
       .collection('MESSAGES')
       .orderBy('createdAt', 'desc')
+      .limit(50)
       .onSnapshot((querySnapshot) => {
-        const messages = querySnapshot.docs.map((doc) => {
+        const messagesFromFirebase = querySnapshot.docs.map((doc) => {
           const firebaseData = doc.data()
 
           const data = {
@@ -75,7 +110,7 @@ export default function RoomScreen({ route }) {
           return data
         })
 
-        setMessages(messages)
+        setMessages(messagesFromFirebase)
       })
 
     // Stop listening for updates whenever the component unmounts
@@ -89,13 +124,15 @@ export default function RoomScreen({ route }) {
           {...props}
           wrapperStyle={{
             right: {
-              backgroundColor: '#0078FF',
+              backgroundColor: colors.rightBubble,
             },
+            left: { backgroundColor: colors.leftBubble },
           }}
           textStyle={{
             right: {
               color: '#fff',
             },
+            left: { color: '#fff' },
           }}
         />
       </View>
@@ -123,7 +160,7 @@ export default function RoomScreen({ route }) {
   function scrollToBottomComponent() {
     return (
       <View style={styles.bottomComponentContainer}>
-        <IconButton icon="chevron-double-down" size={36} color="#6646ee" />
+        <IconButton icon="chevron-double-down" size={36} color="#000" />
       </View>
     )
   }
@@ -135,6 +172,36 @@ export default function RoomScreen({ route }) {
         wrapperStyle={styles.systemMessageWrapper}
         textStyle={styles.systemMessageText}
       />
+    )
+  }
+
+  const handlePickImage = async () => {
+    try {
+      const result = await ImagePicker.launchImageLibrary()
+    } catch (error) {}
+    console.log(result)
+  }
+
+  function handleImgSend(props) {
+    return (
+      <SystemMessage
+        {...props}
+        wrapperStyle={styles.systemMessageWrapper}
+        textStyle={styles.systemMessageText}
+      />
+    )
+  }
+
+  function renderActions(props) {
+    return (
+      <View style={styles.bottomComponentContainer}>
+        <IconButton
+          icon="camera"
+          size={26}
+          color="#0078FF"
+          onPress={handlePickImage}
+        />
+      </View>
     )
   }
 
@@ -152,9 +219,11 @@ export default function RoomScreen({ route }) {
       renderBubble={renderBubble}
       renderLoading={renderLoading}
       renderSend={renderSend}
+      renderActions={renderActions}
       scrollToBottomComponent={scrollToBottomComponent}
       renderSystemMessage={renderSystemMessage}
       renderScrollComponent
+      loadEarlier
     />
   )
 }

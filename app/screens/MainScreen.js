@@ -54,9 +54,6 @@ export default function MainScreen({ navigation }) {
         }
       })
 
-    /**
-     * unsubscribe listener
-     */
     return () => unsubscribe()
   }, [])
 
@@ -68,7 +65,7 @@ export default function MainScreen({ navigation }) {
     <View style={styles.container}>
       <FlatList
         refreshing
-        onRefresh={console.log('swag')}
+        onRefresh={console.log('List refreshed')}
         data={chatroom}
         keyExtractor={(item) => item._id}
         ItemSeparatorComponent={() => <Divider style={styles.divider} />}

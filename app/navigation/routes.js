@@ -1,5 +1,5 @@
 export default Object.freeze({
-  CHAT_SCREEN: 'ChatScreen',
+  Main_Screen: 'MainScreen',
   ACCOUNT: 'Account',
   LOGIN: 'Login',
   WELCOME: 'Welcome',
