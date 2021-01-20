@@ -1,10 +1,17 @@
-import { ActivityIndicator, StyleSheet, Text, View } from 'react-native'
 import {
+  Actions,
+  ActionsProps,
   Bubble,
   GiftedChat,
   Send,
   SystemMessage,
 } from 'react-native-gifted-chat'
+import { ActivityIndicator, Icon, StyleSheet, Text, View } from 'react-native'
+import {
+  ImagePicker,
+  launchCamera,
+  launchImageLibrary,
+} from 'react-native-image-picker'
 import React, { useContext, useEffect, useState } from 'react'
 
 import AuthContext from '../auth/context'
@@ -15,6 +22,7 @@ import useStatsBar from '../utils/useStatusBar'
 
 export default function RoomScreen({ route }) {
   const [messages, setMessages] = useState([])
+  const [imageUri, setImageUri] = useState()
   const { user } = useContext(AuthContext)
   const { chatRoom_id } = route.params
   useStatsBar('light-content')
@@ -34,6 +42,31 @@ export default function RoomScreen({ route }) {
           avatar: user.picture,
         },
       })
+
+    async function handleImageSend(messages) {
+      const image = message[0].image
+      firestore()
+        .collection('Chats')
+        .doc(chatRoom_id)
+        .collection('MESSAGES')
+        .add({
+          image,
+          createdAt: new Date().getTime(),
+          user: {
+            _id: user.name,
+            email: user.email,
+            avatar: user.picture,
+          },
+        })
+    }
+
+    const selectImage = async () => {
+      try {
+        const result = await ImagePicker.launchImageLibraryAsync()
+      } catch (error) {
+        console.log(error)
+      }
+    }
 
     await firestore()
       .collection('Chats')
@@ -142,6 +175,28 @@ export default function RoomScreen({ route }) {
     )
   }
 
+  const handlePickImage = async () => {
+    try {
+      const result = await launchImageLibrary()
+      if (!result.cancelled) setImageUri(result.uri)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  function renderActions(props) {
+    return (
+      <View style={styles.bottomComponentContainer}>
+        <IconButton
+          icon="camera"
+          size={26}
+          color="#0078FF"
+          onPress={handlePickImage}
+        />
+      </View>
+    )
+  }
+
   return (
     <GiftedChat
       messages={messages}
@@ -156,9 +211,11 @@ export default function RoomScreen({ route }) {
       renderBubble={renderBubble}
       renderLoading={renderLoading}
       renderSend={renderSend}
+      renderActions={renderActions}
       scrollToBottomComponent={scrollToBottomComponent}
       renderSystemMessage={renderSystemMessage}
       renderScrollComponent
+      loadEarlier
     />
   )
 }
