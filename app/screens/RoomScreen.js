@@ -36,6 +36,7 @@ export default function RoomScreen({ route }) {
 
   async function handleSend(messages) {
     const text = messages[0].text
+
     firestore()
       .collection('Chats')
       .doc(chatRoom_id)
@@ -49,7 +50,7 @@ export default function RoomScreen({ route }) {
           avatar: user.picture,
         },
       })
-
+    console.log(filePath)
     await firestore()
       .collection('Chats')
       .doc(chatRoom_id)
@@ -78,6 +79,7 @@ export default function RoomScreen({ route }) {
           const data = {
             _id: doc.id,
             text: '',
+            image: '',
             createdAt: new Date().getTime(),
             ...firebaseData,
           }
@@ -233,7 +235,7 @@ export default function RoomScreen({ route }) {
         console.log('fileSize -> ', response.fileSize)
         console.log('type -> ', response.type)
         console.log('fileName -> ', response.fileName)
-        setFilePath(response)
+        setFilePath(respone.uri)
       })
     }
   }
@@ -268,33 +270,22 @@ export default function RoomScreen({ route }) {
       console.log('fileSize -> ', response.fileSize)
       console.log('type -> ', response.type)
       console.log('fileName -> ', response.fileName)
-      setFilePath(response)
+      setFilePath(response.uri)
     })
   }
 
-  function renderImagePicker(props) {
+  function renderImageOptions(props) {
     return (
       <View style={styles.bottomComponentContainer}>
         <IconButton
-          icon="camera"
-          size={26}
-          color="#0078FF"
-          onPress={() => chooseFile('photo')}
-        />
-      </View>
-    )
-  }
-
-  function renderCameraCapture(props) {
-    return (
-      <View style={styles.bottomComponentContainer}>
-        <IconButton
+          style={styles.CameraButtonsStyle}
           icon="camera"
           size={26}
           color="#0078FF"
           onPress={() => captureImage('photo')}
         />
         <IconButton
+          style={styles.ImageButtonsStyle}
           icon="file"
           size={26}
           color="#0078FF"
@@ -319,7 +310,7 @@ export default function RoomScreen({ route }) {
       renderBubble={renderBubble}
       renderLoading={renderLoading}
       renderSend={renderSend}
-      renderActions={renderCameraCapture}
+      renderActions={renderImageOptions}
       scrollToBottomComponent={scrollToBottomComponent}
       renderSystemMessage={renderSystemMessage}
       renderScrollComponent
@@ -339,8 +330,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   bottomComponentContainer: {
-    justifyContent: 'center',
-    alignItems: 'center',
+    flex: 1,
+    flexDirection: 'row',
+  },
+  CameraButtonsStyle: {},
+  ImageButtonsStyle: {
+    marginLeft: -10,
   },
   systemMessageWrapper: {
     backgroundColor: '#000000',
