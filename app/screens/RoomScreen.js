@@ -29,14 +29,14 @@ import useStatsBar from '../utils/useStatusBar'
 
 export default function RoomScreen({ route }) {
   const [messages, setMessages] = useState([])
-  const [filePath, setFilePath] = useState({})
+  const [filePath, setFilePath] = useState('')
   const { user } = useContext(AuthContext)
   const { chatRoom_id } = route.params
   useStatsBar('light-content')
 
   async function handleSend(messages) {
     const text = messages[0].text
-
+    console.log('in send ', filePath)
     firestore()
       .collection('Chats')
       .doc(chatRoom_id)
@@ -44,13 +44,14 @@ export default function RoomScreen({ route }) {
       .add({
         text,
         createdAt: new Date().getTime(),
+        image: filePath,
         user: {
           _id: user.name,
           email: user.email,
           avatar: user.picture,
         },
       })
-    console.log(filePath)
+
     await firestore()
       .collection('Chats')
       .doc(chatRoom_id)
@@ -79,7 +80,6 @@ export default function RoomScreen({ route }) {
           const data = {
             _id: doc.id,
             text: '',
-            image: '',
             createdAt: new Date().getTime(),
             ...firebaseData,
           }
@@ -90,10 +90,8 @@ export default function RoomScreen({ route }) {
               name: firebaseData.user._id,
             }
           }
-
           return data
         })
-
         setMessages(messagesFromFirebase)
       })
 
@@ -102,24 +100,24 @@ export default function RoomScreen({ route }) {
   }, [])
 
   function renderBubble(props) {
+    const { currentMessage } = props
+    console.log(' props in bubble ', currentMessage)
     return (
-      <View>
-        <Bubble
-          {...props}
-          wrapperStyle={{
-            right: {
-              backgroundColor: colors.rightBubble,
-            },
-            left: { backgroundColor: colors.leftBubble },
-          }}
-          textStyle={{
-            right: {
-              color: '#fff',
-            },
-            left: { color: '#fff' },
-          }}
-        />
-      </View>
+      <Bubble
+        {...props}
+        wrapperStyle={{
+          right: {
+            backgroundColor: colors.rightBubble,
+          },
+          left: { backgroundColor: colors.leftBubble },
+        }}
+        textStyle={{
+          right: {
+            color: '#fff',
+          },
+          left: { color: '#fff' },
+        }}
+      />
     )
   }
 
@@ -235,7 +233,7 @@ export default function RoomScreen({ route }) {
         console.log('fileSize -> ', response.fileSize)
         console.log('type -> ', response.type)
         console.log('fileName -> ', response.fileName)
-        setFilePath(respone.uri)
+        setFilePath(response.uri)
       })
     }
   }
