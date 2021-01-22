@@ -31,7 +31,7 @@ export default function MainScreen({ navigation }) {
   const [chatroom, setChatRoom] = useState([])
   const [loading, setLoading] = useState(true)
   const [isFetching, setFetching] = useState()
-  const [refreshData, setData] = useState(0)
+  const [refreshData, startRefreshData] = useState(0)
   useStatsBar('light-content')
   /**
    * Fetch messages from Firestore
@@ -65,7 +65,7 @@ export default function MainScreen({ navigation }) {
   }
 
   function onRefresh() {
-    setData(refreshData + 1)
+    startRefreshData(refreshData + 1)
     setFetching(false)
   }
 
