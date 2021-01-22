@@ -5,5 +5,6 @@ export default {
   black: '#000',
   white: '#fff',
   rightBubble: '#00B707',
-  leftBubble: '#000',
+  leftBubble: '#E5E5E5',
+  chatBackgound: '#fff',
 }

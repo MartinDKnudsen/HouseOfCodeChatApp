@@ -107,7 +107,6 @@ export default function RoomScreen({ route }) {
     const { currentMessage } = props
     console.log(' props in bubble ', currentMessage)
     return (
-      // <View>
       <Bubble
         {...props}
         wrapperStyle={{
@@ -120,10 +119,9 @@ export default function RoomScreen({ route }) {
           right: {
             color: '#fff',
           },
-          left: { color: '#fff' },
+          left: { color: '#000' },
         }}
       />
-      // </View>
     )
   }
 
@@ -282,34 +280,36 @@ export default function RoomScreen({ route }) {
 
   function renderImageOptions(props) {
     return (
-      <View style={styles.bottomComponentContainer}>
-        <IconButton
-          style={styles.CameraButtonsStyle}
-          icon="camera"
-          size={26}
-          color="#0078FF"
-          onPress={() => captureImage('photo')}
-        />
-        <View
-          style={{
-            flexDirection: 'row',
-          }}>
+      <View>
+        <View style={styles.bottomComponentContainer}>
           <IconButton
-            style={styles.ImageButtonsStyle}
-            icon="file"
+            style={styles.CameraButtonsStyle}
+            icon="camera"
             size={26}
             color="#0078FF"
-            onPress={() => chooseFile('photo')}
+            onPress={() => captureImage('photo')}
           />
-          {filePath ? (
-            <Text
-              style={{
-                alignSelf: 'center',
-              }}>
-              {' '}
-              1
-            </Text>
-          ) : null}
+          <View
+            style={{
+              flexDirection: 'row',
+            }}>
+            <IconButton
+              style={styles.ImageButtonsStyle}
+              icon="file"
+              size={26}
+              color="#0078FF"
+              onPress={() => chooseFile('photo')}
+            />
+            {filePath ? (
+              <Text
+                style={{
+                  alignSelf: 'center',
+                }}>
+                {' '}
+                1
+              </Text>
+            ) : null}
+          </View>
         </View>
       </View>
     )
@@ -318,6 +318,11 @@ export default function RoomScreen({ route }) {
 
   return (
     <GiftedChat
+      listViewProps={{
+        style: {
+          backgroundColor: '#fff',
+        },
+      }}
       messages={messages}
       onSend={(text) => handleSend(text)}
       // onSend={() => alert('hello')}
@@ -347,7 +352,11 @@ const styles = StyleSheet.create({
   loadingContainer: {
     flex: 1,
     alignItems: 'center',
+    marginTop: 300,
     justifyContent: 'center',
+  },
+  chatBackground: {
+    backgroundColor: colors.chatBackgound,
   },
   sendingContainer: {
     justifyContent: 'center',
@@ -357,12 +366,17 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
   },
+  ImageHandlerContainer: {
+    flex: 1,
+    flexDirection: 'row',
+    backgroundColor: '#000',
+  },
   CameraButtonsStyle: {},
   ImageButtonsStyle: {
     marginLeft: -10,
   },
   systemMessageWrapper: {
-    backgroundColor: '#000000',
+    backgroundColor: '#15A9E0',
     borderRadius: 4,
     padding: 5,
   },

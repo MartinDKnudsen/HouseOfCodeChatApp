@@ -10,29 +10,30 @@ import {
 } from 'react-native'
 import { NavigationContainer, useNavigation } from '@react-navigation/native'
 
+import Google from '../auth/socialSignIn/GoogleAuth'
 import React from 'react'
+import Screen from './Screen'
 
 export default function WelcomeScreen({ navigate }) {
   const navigation = useNavigation()
   return (
-    <SafeAreaView>
-      <Image style={styles.imageStyle} source={require('../Images/logo.png')} />
-      <View style={styles.container}>
-        <Button
-          title="Login"
-          style={styles.loginButton}
-          onPress={() => navigation.navigate('Login')}
+    <Screen>
+      <View>
+        <Image
+          style={styles.imageStyle}
+          source={require('../Images/logo.png')}
         />
+        <Google />
       </View>
-    </SafeAreaView>
+    </Screen>
   )
 }
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#000',
+    backgroundColor: '#fff',
     justifyContent: 'center',
-    marginTop: 40,
+    marginTop: 200,
     height: 70,
   },
   textcsadolor: {
