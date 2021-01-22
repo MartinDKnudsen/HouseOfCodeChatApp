@@ -2,6 +2,7 @@ import {
   Button,
   FlatList,
   Image,
+  RefreshControl,
   SafeAreaView,
   ScrollView,
   StatusBar,
@@ -29,6 +30,7 @@ export default function MainScreen({ navigation }) {
   const { user, setUser } = useContext(AuthContext)
   const [chatroom, setChatRoom] = useState([])
   const [loading, setLoading] = useState(true)
+  const [isFetching, setFetching] = useState()
   useStatsBar('light-content')
   /**
    * Fetch messages from Firestore
@@ -61,12 +63,23 @@ export default function MainScreen({ navigation }) {
     return <Loading />
   }
 
+  function onRefresh() {
+    //this.setState({isFetching: true,},() => {this.getApiData();});
+
+    console.log('SWAG')
+    setFetching(false)
+  }
+
   return (
     <View style={styles.container}>
       <FlatList
-        refreshing
-        onRefresh={console.log('List refreshed')}
         data={chatroom}
+        refreshControl={
+          <RefreshControl
+            refreshing={isFetching}
+            onRefresh={() => onRefresh()}
+          />
+        }
         keyExtractor={(item) => item._id}
         ItemSeparatorComponent={() => <Divider style={styles.divider} />}
         renderItem={({ item }) => (

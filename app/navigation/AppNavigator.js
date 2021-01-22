@@ -1,8 +1,8 @@
+import { Alert, Button } from 'react-native'
 import React, { useContext } from 'react'
 
 import AccountScreen from '../screens/AccountScreen'
 import AddRoomScreen from '../screens/AddRoomScreen'
-import Alert from 'react-native'
 import AuthContext from '../auth/context'
 import { GoogleSignin } from '@react-native-community/google-signin'
 import { IconButton } from 'react-native-paper'
@@ -37,7 +37,7 @@ function ChatApp() {
     try {
       await GoogleSignin.revokeAccess()
       await GoogleSignin.signOut()
-      setUser(null)
+      if (user != null) setUser(null)
       console.log('User is now signed out')
     } catch (error) {
       console.error(error)

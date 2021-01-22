@@ -15,16 +15,13 @@ import {
 import { NavigationContainer, useNavigation } from '@react-navigation/native'
 import React, { Component, useContext, useEffect, useState } from 'react'
 
-import AppNavigator from '../navigation/AppNavigator'
-import AuthContext from '../auth/context'
-import Facebook from './FacebookLoginScreen'
-import Screen from './Screen'
+import AppNavigator from '../../navigation/AppNavigator'
+import AuthContext from '../context'
+import Screen from '../../screens/Screen'
 import auth from '@react-native-firebase/auth'
 import firebase from 'firebase'
-import { firebaseCfg } from '../auth/firebase/config'
+import { firebaseCfg } from '../firebase/config'
 import jwtDecode from 'jwt-decode'
-import routes from '../navigation/routes'
-import useAuth from '../auth/useAuth'
 
 GoogleSignin.configure({
   webClientId:
@@ -37,7 +34,6 @@ GoogleSignin.configure({
 //const { setUser } = useContext(AuthContext)
 //setUser(null)
 //}
-
 const GoogleLogin = () => {
   const [user, setUser] = useState()
   const authContext = useContext(AuthContext)

@@ -25,34 +25,6 @@ import { firebaseCfg } from '../auth/firebase/config'
 import jwtDecode from 'jwt-decode'
 import routes from '../navigation/routes'
 
-GoogleSignin.configure({
-  webClientId:
-    '515325063656-6n4qup8tccj7q5cfldht2ngn623imebs.apps.googleusercontent.com',
-  androidClientId:
-    '515325063656-6n4qup8tccj7q5cfldht2ngn623imebs.apps.googleusercontent.com',
-})
-
-const GooglesignOut = async () => {
-  try {
-    await GoogleSignin.revokeAccess()
-    await GoogleSignin.signOut()
-    console.log('User is now signed out')
-  } catch (error) {
-    console.error(error)
-  }
-}
-
-const signOut = async () => {
-  auth()
-    .signOut()
-    .then(function () {
-      GooglesignOut()
-    })
-    .catch(function (error) {
-      // An error happened.
-    })
-}
-
 const LoginScreen = () => {
   return (
     <Screen style={styles.container}>
