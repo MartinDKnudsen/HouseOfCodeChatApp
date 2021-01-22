@@ -30,12 +30,14 @@ import useStatsBar from '../utils/useStatusBar'
 export default function RoomScreen({ route }) {
   const [messages, setMessages] = useState([])
   const [filePath, setFilePath] = useState('')
+  const [text, setText] = useState(null)
   const { user } = useContext(AuthContext)
   const { chatRoom_id } = route.params
   useStatsBar('light-content')
 
   async function handleSend(messages) {
-    const text = messages[0].text
+    console.log('1 ', messages)
+    // const text = messages[0].text
     console.log('in send ', filePath)
     firestore()
       .collection('Chats')
@@ -59,6 +61,7 @@ export default function RoomScreen({ route }) {
         {
           latestMessage: {
             text,
+            image: filePath,
             createdAt: new Date().getTime(),
           },
         },
@@ -76,10 +79,11 @@ export default function RoomScreen({ route }) {
       .onSnapshot((querySnapshot) => {
         const messagesFromFirebase = querySnapshot.docs.map((doc) => {
           const firebaseData = doc.data()
-
+          console.log('fb ', firebaseData)
           const data = {
             _id: doc.id,
             text: '',
+            image: '',
             createdAt: new Date().getTime(),
             ...firebaseData,
           }
@@ -271,6 +275,8 @@ export default function RoomScreen({ route }) {
       console.log('type -> ', response.type)
       console.log('fileName -> ', response.fileName)
       setFilePath(response.uri)
+      // setMessages((prev) => [...prev, { text: '' }])
+      setText(' ')
     })
   }
 
@@ -284,13 +290,27 @@ export default function RoomScreen({ route }) {
           color="#0078FF"
           onPress={() => captureImage('photo')}
         />
-        <IconButton
-          style={styles.ImageButtonsStyle}
-          icon="file"
-          size={26}
-          color="#0078FF"
-          onPress={() => chooseFile('photo')}
-        />
+        <View
+          style={{
+            flexDirection: 'row',
+          }}>
+          <IconButton
+            style={styles.ImageButtonsStyle}
+            icon="file"
+            size={26}
+            color="#0078FF"
+            onPress={() => chooseFile('photo')}
+          />
+          {filePath ? (
+            <Text
+              style={{
+                alignSelf: 'center',
+              }}>
+              {' '}
+              1
+            </Text>
+          ) : null}
+        </View>
       </View>
     )
   }
@@ -299,8 +319,11 @@ export default function RoomScreen({ route }) {
   return (
     <GiftedChat
       messages={messages}
-      onSend={handleSend}
+      onSend={(text) => handleSend(text)}
+      // onSend={() => alert('hello')}
       user={{ _id: user.name }}
+      text={text}
+      onInputTextChanged={(val) => setText(val)}
       placeholder="Type your message here..."
       alwaysShowSend
       showUserAvatar
@@ -314,6 +337,7 @@ export default function RoomScreen({ route }) {
       scrollToBottomComponent={scrollToBottomComponent}
       renderSystemMessage={renderSystemMessage}
       renderScrollComponent
+      // shouldUpdateMessage={filePath}
       loadEarlier
     />
   )
