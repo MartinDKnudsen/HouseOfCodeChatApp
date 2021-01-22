@@ -103,6 +103,7 @@ export default function RoomScreen({ route }) {
     const { currentMessage } = props
     console.log(' props in bubble ', currentMessage)
     return (
+      // <View>
       <Bubble
         {...props}
         wrapperStyle={{
@@ -118,6 +119,7 @@ export default function RoomScreen({ route }) {
           left: { color: '#fff' },
         }}
       />
+      // </View>
     )
   }
 
@@ -233,7 +235,7 @@ export default function RoomScreen({ route }) {
         console.log('fileSize -> ', response.fileSize)
         console.log('type -> ', response.type)
         console.log('fileName -> ', response.fileName)
-        setFilePath(response.uri)
+        setFilePath(respone.uri)
       })
     }
   }
