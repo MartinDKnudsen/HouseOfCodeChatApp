@@ -31,6 +31,7 @@ export default function MainScreen({ navigation }) {
   const [chatroom, setChatRoom] = useState([])
   const [loading, setLoading] = useState(true)
   const [isFetching, setFetching] = useState()
+  const [refreshData, startRefreshData] = useState(0)
   useStatsBar('light-content')
   /**
    * Fetch messages from Firestore
@@ -48,7 +49,7 @@ export default function MainScreen({ navigation }) {
             ...documentSnapshot.data(),
           }
         })
-
+        console.log('Chatrooms refreshed')
         setChatRoom(chatroom)
 
         if (loading) {
@@ -57,16 +58,14 @@ export default function MainScreen({ navigation }) {
       })
 
     return () => unsubscribe()
-  }, [])
+  }, [refreshData])
 
   if (loading) {
     return <Loading />
   }
 
   function onRefresh() {
-    //this.setState({isFetching: true,},() => {this.getApiData();});
-
-    console.log('SWAG')
+    startRefreshData(refreshData + 1)
     setFetching(false)
   }
 

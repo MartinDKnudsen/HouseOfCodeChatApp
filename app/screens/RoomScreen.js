@@ -8,6 +8,7 @@ import {
 } from 'react-native-gifted-chat'
 import {
   ActivityIndicator,
+  Alert,
   Icon,
   PermissionsAndroid,
   StyleSheet,
@@ -27,18 +28,22 @@ import colors from '../config/colors'
 import firestore from '@react-native-firebase/firestore'
 import useStatsBar from '../utils/useStatusBar'
 
+var numberOfMessagesToLoad = 0
+var maxMsg = 0
 export default function RoomScreen({ route }) {
   const [messages, setMessages] = useState([])
   const [filePath, setFilePath] = useState('')
   const [text, setText] = useState(null)
+  const [refreshMessages, startRefreshMessages] = useState(0)
+  const [roomId, setRoomId] = useState()
   const { user } = useContext(AuthContext)
   const { chatRoom_id } = route.params
   useStatsBar('light-content')
 
   async function handleSend(messages) {
-    console.log('1 ', messages)
+    //console.log('1 ', messages)
     // const text = messages[0].text
-    console.log('in send ', filePath)
+    // console.log('in send ', filePath)
     firestore()
       .collection('Chats')
       .doc(chatRoom_id)
@@ -53,59 +58,75 @@ export default function RoomScreen({ route }) {
           avatar: user.picture,
         },
       })
-
-    await firestore()
-      .collection('Chats')
-      .doc(chatRoom_id)
-      .set(
-        {
-          latestMessage: {
-            text,
-            image: filePath,
-            createdAt: new Date().getTime(),
-          },
-        },
-        { merge: true },
-      )
   }
 
   useEffect(() => {
-    const messagesListener = firestore()
+    var maxMessages = firestore()
       .collection('Chats')
       .doc(chatRoom_id)
       .collection('MESSAGES')
-      .orderBy('createdAt', 'desc')
-      .limit(50)
-      .onSnapshot((querySnapshot) => {
-        const messagesFromFirebase = querySnapshot.docs.map((doc) => {
-          const firebaseData = doc.data()
-          console.log('fb ', firebaseData)
-          const data = {
-            _id: doc.id,
-            text: '',
-            image: '',
-            createdAt: new Date().getTime(),
-            ...firebaseData,
-          }
-
-          if (!firebaseData.system) {
-            data.user = {
-              ...firebaseData.user,
-              name: firebaseData.user._id,
-            }
-          }
-          return data
-        })
-        setMessages(messagesFromFirebase)
+      .onSnapshot((querySnapShot) => {
+        maxMsg = querySnapShot.size
+        console.log('NOW maxMSG should be: ' + maxMsg)
       })
 
-    // Stop listening for updates whenever the component unmounts
-    return () => messagesListener()
-  }, [])
+    console.log('BUT NOW IT IS ' + maxMsg)
+
+    if (maxMsg - numberOfMessagesToLoad < 0) {
+      console.log('No more messages to load')
+    } else {
+      numberOfMessagesToLoad += 10
+    }
+
+    console.log(numberOfMessagesToLoad)
+
+    if (numberOfMessagesToLoad > 1) {
+      const messagesListener = firestore()
+        .collection('Chats')
+        .doc(chatRoom_id)
+        .collection('MESSAGES')
+        .orderBy('createdAt', 'desc')
+        .limit(numberOfMessagesToLoad)
+        .onSnapshot((querySnapshot) => {
+          const messagesFromFirebase = querySnapshot.docs.map((doc) => {
+            const firebaseData = doc.data()
+            // console.log('fb ', firebaseData)
+            const data = {
+              _id: doc.id,
+              text: '',
+              image: '',
+              createdAt: new Date().getTime(),
+              ...firebaseData,
+            }
+
+            if (!firebaseData.system) {
+              data.user = {
+                ...firebaseData.user,
+                name: firebaseData.user._id,
+              }
+            }
+            return data
+          })
+
+          console.log('Messages refreshed')
+          // console.log('THERE ARE CURRENTLY => ' + messagesFromFirebase.length)
+          setMessages(messagesFromFirebase)
+
+          if (messagesListener != null) {
+            console.log('NOT NULL')
+          }
+        })
+      // Stop listening for updates whenever the component unmounts
+      return () => messagesListener()
+    } else {
+      console.log('No more messages to load')
+      numberOfMessagesToLoad == 1
+    }
+  }, [refreshMessages])
 
   function renderBubble(props) {
     const { currentMessage } = props
-    console.log(' props in bubble ', currentMessage)
+    //  console.log(' props in bubble ', currentMessage)
     return (
       <Bubble
         {...props}
@@ -141,6 +162,9 @@ export default function RoomScreen({ route }) {
         </View>
       </Send>
     )
+  }
+  function LoadEarlierMessages() {
+    startRefreshMessages(refreshMessages + 1)
   }
 
   function scrollToBottomComponent() {
@@ -207,8 +231,6 @@ export default function RoomScreen({ route }) {
       maxWidth: 300,
       maxHeight: 550,
       quality: 1,
-      videoQuality: 'low',
-      durationLimit: 30, //Video max duration in seconds
       saveToPhotos: true,
     }
     let isCameraPermitted = await requestCameraPermission()
@@ -343,7 +365,9 @@ export default function RoomScreen({ route }) {
       renderSystemMessage={renderSystemMessage}
       renderScrollComponent
       // shouldUpdateMessage={filePath}
+      infiniteScroll
       loadEarlier
+      onLoadEarlier={LoadEarlierMessages}
     />
   )
 }
@@ -365,6 +389,7 @@ const styles = StyleSheet.create({
   bottomComponentContainer: {
     flex: 1,
     flexDirection: 'row',
+    width: 80,
   },
   ImageHandlerContainer: {
     flex: 1,
@@ -373,7 +398,7 @@ const styles = StyleSheet.create({
   },
   CameraButtonsStyle: {},
   ImageButtonsStyle: {
-    marginLeft: -10,
+    marginLeft: -1,
   },
   systemMessageWrapper: {
     backgroundColor: '#15A9E0',

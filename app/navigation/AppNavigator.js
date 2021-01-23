@@ -11,6 +11,8 @@ import RoomScreen from '../screens/RoomScreen'
 import auth from '@react-native-firebase/auth'
 import colors from '../config/colors'
 import { createStackNavigator } from '@react-navigation/stack'
+import firestore from '@react-native-firebase/firestore'
+import { messagesListener } from '../screens/RoomScreen'
 
 const ChatAppStack = createStackNavigator()
 const ModalStack = createStackNavigator()
@@ -30,7 +32,7 @@ function ChatApp() {
         GooglesignOut()
       })
       .catch(function (error) {
-        // An error happened.
+        console.log(error)
       })
   }
   const GooglesignOut = async () => {
