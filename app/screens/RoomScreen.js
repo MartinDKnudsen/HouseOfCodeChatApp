@@ -29,7 +29,7 @@ import firestore from '@react-native-firebase/firestore'
 import useStatsBar from '../utils/useStatusBar'
 
 var numberOfMessagesToLoad = 0
-
+var maxMsg = 0
 export default function RoomScreen({ route }) {
   const [messages, setMessages] = useState([])
   const [filePath, setFilePath] = useState('')
@@ -73,29 +73,27 @@ export default function RoomScreen({ route }) {
       )
   }
 
-  var numberOfMsgInRoom = 0
-  const snapshot = firestore()
-    .collection('Chats')
-    .doc(chatRoom_id)
-    .collection('MESSAGES')
-    .onSnapshot((querySnapShot) => {
-      numberOfMsgInRoom = querySnapShot.size
-    })
-  console.log(numberOfMsgInRoom)
   useEffect(() => {
-    const maxMessages = numberOfMsgInRoom
+    var maxMessages = firestore()
+      .collection('Chats')
+      .doc(chatRoom_id)
+      .collection('MESSAGES')
+      .onSnapshot((querySnapShot) => {
+        maxMsg = querySnapShot.size
+        console.log('NOW maxMSG should be: ' + maxMsg)
+      })
 
-    console.log(numberOfMsgInRoom)
+    console.log('BUT NOW IT IS ' + maxMsg)
 
-    if (maxMessages - numberOfMessagesToLoad < 10) {
-      numberOfMessagesToLoad += 8
+    if (maxMsg - numberOfMessagesToLoad < 0) {
+      console.log('STARTED FROM THE BOTTOM NOW WE ARE HERE')
     } else {
       numberOfMessagesToLoad += 10
     }
 
     console.log(numberOfMessagesToLoad)
 
-    if (true) {
+    if (numberOfMessagesToLoad > 0) {
       const messagesListener = firestore()
         .collection('Chats')
         .doc(chatRoom_id)
@@ -126,11 +124,16 @@ export default function RoomScreen({ route }) {
           console.log('Messages refreshed')
           // console.log('THERE ARE CURRENTLY => ' + messagesFromFirebase.length)
           setMessages(messagesFromFirebase)
+
+          if (messagesListener != null) {
+            console.log('NOT NULL')
+          }
         })
       // Stop listening for updates whenever the component unmounts
       return () => messagesListener()
     } else {
       Alert.alert('No more messages to load')
+      numberOfMessagesToLoad = maxMsg
     }
   }, [refreshMessages])
 
