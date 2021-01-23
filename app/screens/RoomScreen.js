@@ -127,7 +127,6 @@ export default function RoomScreen({ route }) {
           // console.log('THERE ARE CURRENTLY => ' + messagesFromFirebase.length)
           setMessages(messagesFromFirebase)
         })
-
       // Stop listening for updates whenever the component unmounts
       return () => messagesListener()
     } else {
