@@ -35,6 +35,7 @@ export default function RoomScreen({ route }) {
   const [filePath, setFilePath] = useState('')
   const [text, setText] = useState(null)
   const [refreshMessages, startRefreshMessages] = useState(0)
+  const [roomId, setRoomId] = useState()
   const { user } = useContext(AuthContext)
   const { chatRoom_id } = route.params
   useStatsBar('light-content')
@@ -57,20 +58,6 @@ export default function RoomScreen({ route }) {
           avatar: user.picture,
         },
       })
-
-    await firestore()
-      .collection('Chats')
-      .doc(chatRoom_id)
-      .set(
-        {
-          latestMessage: {
-            text,
-            image: filePath,
-            createdAt: new Date().getTime(),
-          },
-        },
-        { merge: true },
-      )
   }
 
   useEffect(() => {
@@ -86,14 +73,14 @@ export default function RoomScreen({ route }) {
     console.log('BUT NOW IT IS ' + maxMsg)
 
     if (maxMsg - numberOfMessagesToLoad < 0) {
-      console.log('STARTED FROM THE BOTTOM NOW WE ARE HERE')
+      console.log('No more messages to load')
     } else {
       numberOfMessagesToLoad += 10
     }
 
     console.log(numberOfMessagesToLoad)
 
-    if (numberOfMessagesToLoad > 0) {
+    if (numberOfMessagesToLoad > 1) {
       const messagesListener = firestore()
         .collection('Chats')
         .doc(chatRoom_id)
@@ -132,8 +119,8 @@ export default function RoomScreen({ route }) {
       // Stop listening for updates whenever the component unmounts
       return () => messagesListener()
     } else {
-      Alert.alert('No more messages to load')
-      numberOfMessagesToLoad = maxMsg
+      console.log('No more messages to load')
+      numberOfMessagesToLoad == 1
     }
   }, [refreshMessages])
 
