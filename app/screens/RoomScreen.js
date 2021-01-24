@@ -120,7 +120,6 @@ export default function RoomScreen({ route }) {
       return () => messagesListener()
     } else {
       console.log('No more messages to load')
-      numberOfMessagesToLoad == 1
     }
   }, [refreshMessages])
 
@@ -347,7 +346,6 @@ export default function RoomScreen({ route }) {
       }}
       messages={messages}
       onSend={(text) => handleSend(text)}
-      // onSend={() => alert('hello')}
       user={{ _id: user.name }}
       text={text}
       onInputTextChanged={(val) => setText(val)}
@@ -364,7 +362,6 @@ export default function RoomScreen({ route }) {
       scrollToBottomComponent={scrollToBottomComponent}
       renderSystemMessage={renderSystemMessage}
       renderScrollComponent
-      // shouldUpdateMessage={filePath}
       infiniteScroll
       loadEarlier
       onLoadEarlier={LoadEarlierMessages}
