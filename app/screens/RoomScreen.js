@@ -35,7 +35,7 @@ export default function RoomScreen({ route }) {
   const [filePath, setFilePath] = useState('')
   const [text, setText] = useState(null)
   const [refreshMessages, startRefreshMessages] = useState(0)
-  const [roomId, setRoomId] = useState()
+
   const { user } = useContext(AuthContext)
   const { chatRoom_id } = route.params
   useStatsBar('light-content')
