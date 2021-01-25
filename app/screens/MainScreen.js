@@ -50,7 +50,13 @@ export default function MainScreen({ navigation }) {
             ...documentSnapshot.data(),
           }
         })
-        console.log(messaging().getToken())
+
+        messaging()
+          .getToken()
+          .then((token) => {
+            console.log('FIREBASE TOKEN =>' + token)
+          })
+        console.log(auth().currentUser.uid)
         console.log('Chatrooms refreshed')
 
         setChatRoom(chatroom)
