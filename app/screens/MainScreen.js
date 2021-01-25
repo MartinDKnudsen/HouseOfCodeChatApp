@@ -24,6 +24,7 @@ import Loading from '../components/Loading'
 import UserCard from '../components/userCard'
 import auth from '@react-native-firebase/auth'
 import firestore from '@react-native-firebase/firestore'
+import messaging from '@react-native-firebase/messaging'
 import useStatsBar from '../utils/useStatusBar'
 
 export default function MainScreen({ navigation }) {
@@ -49,7 +50,9 @@ export default function MainScreen({ navigation }) {
             ...documentSnapshot.data(),
           }
         })
+        console.log(messaging().getToken())
         console.log('Chatrooms refreshed')
+
         setChatRoom(chatroom)
 
         if (loading) {
