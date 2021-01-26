@@ -51,9 +51,9 @@ function ChatApp() {
     <ChatAppStack.Navigator
       screenOptions={{
         headerStyle: {
-          backgroundColor: '#10a9e0',
+          backgroundColor: colors.headerStyle_backgroundColor,
         },
-        headerTintColor: '#ffffff',
+        headerTintColor: colors.white,
         headerTitleStyle: {
           fontSize: 22,
         },

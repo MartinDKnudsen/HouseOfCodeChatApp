@@ -40,10 +40,28 @@ export default function RoomScreen({ route }) {
   const { chatRoom_id } = route.params
   useStatsBar('light-content')
 
+  const cloudinaryUpload = (photo) => {
+    const data = new FormData()
+    data.append('file', photo)
+    data.append('upload_preset', 'chatApp')
+    data.append('cloud_name', 'dvya2cgfo')
+    fetch('https://api.cloudinary.com/v1_1/dvya2cgfo/image/upload', {
+      method: 'post',
+      body: data,
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        console.log('data ', data)
+        setText(' ')
+        setFilePath(data.secure_url)
+      })
+      .catch((err) => {
+        console.log('error is ', err)
+        alert('An Error Occured While Uploading')
+      })
+  }
+
   async function handleSend(messages) {
-    //console.log('1 ', messages)
-    // const text = messages[0].text
-    // console.log('in send ', filePath)
     firestore()
       .collection('Chats')
       .doc(chatRoom_id)

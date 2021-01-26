@@ -13,12 +13,12 @@ import React, { useContext, useEffect, useState } from 'react'
 import AppNavigator from './app/navigation/AppNavigator'
 import AuthContext from './app/auth/context'
 import AuthNavigator from './app/navigation/AuthNavigator'
-import FirebaseMessaging from '@react-native-firebase/messaging'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 import LoginScreen from './app/screens/LoginScreen'
 import RNBootSplash from 'react-native-bootsplash'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import { createStackNavigator } from '@react-navigation/stack'
+import firestore from '@react-native-firebase/firestore'
 
 /**
  * Sample React Native App
@@ -29,6 +29,7 @@ import { createStackNavigator } from '@react-navigation/stack'
  */
 export default function App() {
   const [user, setUser] = useState(null)
+
   useEffect(() => {
     RNBootSplash.hide({ duration: 500, fade: true })
   }, [])

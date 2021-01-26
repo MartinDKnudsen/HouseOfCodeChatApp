@@ -7,4 +7,5 @@ export default {
   rightBubble: '#00B707',
   leftBubble: '#E5E5E5',
   chatBackgound: '#fff',
+  headerStyle_backgroundColor: '#10a9e0',
 }
