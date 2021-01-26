@@ -16,6 +16,7 @@ messaging().setBackgroundMessageHandler(async (remoteMessage) => {
 })
 
 messaging().onNotificationOpenedApp(async (remoteMessage) => {
+  const navigation = useNavigation()
   navigation.navigate('Room', { chatRoom_id: EjYgjvPpvTOOJwrrPqyo })
 })
 
