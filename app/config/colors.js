@@ -8,4 +8,6 @@ export default {
   leftBubble: '#E5E5E5',
   chatBackgound: '#fff',
   headerStyle_backgroundColor: '#10a9e0',
+  chatIcons: '#0078FF',
+  systemMessageWrapper: '#15A9E0',
 }

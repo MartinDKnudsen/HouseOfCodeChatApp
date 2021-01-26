@@ -187,7 +187,7 @@ export default function RoomScreen({ route }) {
   function scrollToBottomComponent() {
     return (
       <View style={styles.bottomComponentContainer}>
-        <IconButton icon="chevron-double-down" size={36} color="#000" />
+        <IconButton icon="chevron-double-down" size={36} color={colors.black} />
       </View>
     )
   }
@@ -312,7 +312,7 @@ export default function RoomScreen({ route }) {
       console.log('type -> ', response.type)
       console.log('fileName -> ', response.fileName)
       setFilePath(response.uri)
-      // setMessages((prev) => [...prev, { text: '' }])
+
       setText(' ')
     })
   }
@@ -325,7 +325,7 @@ export default function RoomScreen({ route }) {
             style={styles.CameraButtonsStyle}
             icon="camera"
             size={26}
-            color="#0078FF"
+            color={colors.chatIcons}
             onPress={() => captureImage('photo')}
           />
           <View
@@ -336,7 +336,7 @@ export default function RoomScreen({ route }) {
               style={styles.ImageButtonsStyle}
               icon="file"
               size={26}
-              color="#0078FF"
+              color={colors.chatIcons}
               onPress={() => chooseFile('photo')}
             />
             {filePath ? (
@@ -345,7 +345,6 @@ export default function RoomScreen({ route }) {
                   alignSelf: 'center',
                 }}>
                 {' '}
-                1
               </Text>
             ) : null}
           </View>
@@ -359,7 +358,7 @@ export default function RoomScreen({ route }) {
     <GiftedChat
       listViewProps={{
         style: {
-          backgroundColor: '#fff',
+          backgroundColor: colors.white,
         },
       }}
       messages={messages}
@@ -409,14 +408,14 @@ const styles = StyleSheet.create({
   ImageHandlerContainer: {
     flex: 1,
     flexDirection: 'row',
-    backgroundColor: '#000',
+    backgroundColor: colors.black,
   },
   CameraButtonsStyle: {},
   ImageButtonsStyle: {
     marginLeft: -1,
   },
   systemMessageWrapper: {
-    backgroundColor: '#15A9E0',
+    backgroundColor: colors.systemMessageWrapper,
     borderRadius: 4,
     padding: 5,
   },
@@ -426,7 +425,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   UsernameText: {
-    color: '#000',
+    color: colors.black,
     fontSize: 12,
     textAlign: 'right',
     alignSelf: 'stretch',
