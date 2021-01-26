@@ -39,7 +39,7 @@ export default function RoomScreen({ route }) {
   const { user } = useContext(AuthContext)
   const { chatRoom_id } = route.params
   useStatsBar('light-content')
-
+  console.log(chatRoom_id)
   const cloudinaryUpload = (photo) => {
     const data = new FormData()
     data.append('file', photo)

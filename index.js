@@ -2,6 +2,8 @@
  * @format
  */
 
+import { NavigationContainer, useNavigation } from '@react-navigation/native'
+
 import App from './App'
 import { AppRegistry } from 'react-native'
 import { name as appName } from './app.json'
@@ -14,7 +16,7 @@ messaging().setBackgroundMessageHandler(async (remoteMessage) => {
 })
 
 messaging().onNotificationOpenedApp(async (remoteMessage) => {
-  console.log('NOTIFICAION OPENED')
+  navigation.navigate('Room', { chatRoom_id: EjYgjvPpvTOOJwrrPqyo })
 })
 
 messaging()
