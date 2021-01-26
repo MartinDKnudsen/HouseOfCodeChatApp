@@ -19,7 +19,6 @@ import LoginScreen from './app/screens/LoginScreen'
 import RNBootSplash from 'react-native-bootsplash'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import { createStackNavigator } from '@react-navigation/stack'
-import firebase from 'firebase'
 
 /**
  * Sample React Native App

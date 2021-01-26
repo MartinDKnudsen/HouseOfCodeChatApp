@@ -1,4 +1,5 @@
 import {
+  Alert,
   Button,
   SafeAreaView,
   ScrollView,
@@ -30,10 +31,6 @@ GoogleSignin.configure({
     '515325063656-6n4qup8tccj7q5cfldht2ngn623imebs.apps.googleusercontent.com',
 })
 
-//const nullUser = async () => {
-//const { setUser } = useContext(AuthContext)
-//setUser(null)
-//}
 const GoogleLogin = () => {
   const [user, setUser] = useState()
   const authContext = useContext(AuthContext)
@@ -55,9 +52,18 @@ const GoogleLogin = () => {
       console.log(user)
       authContext.setUser(user)
     } catch (error) {
-      console.log(error)
+      if (error.code === statusCodes.SIGN_IN_CANCELLED) {
+        Alert.alert('Signin cancelled')
+      } else if (error.code === statusCodes.IN_PROGRESS) {
+        Alert.alert('Sign in is in progress already')
+      } else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
+        Alert.alert('play services not available or outdated')
+      } else {
+        Alert.alert('Unknown error encountered - login cancelled')
+      }
     }
   }
+
   return (
     <View>
       <GoogleSigninButton
@@ -69,11 +75,7 @@ const GoogleLogin = () => {
         }}
         size={GoogleSigninButton.Size.Wide}
         color={GoogleSigninButton.Color.Dark}
-        onPress={() =>
-          onGoogleButtonPress().then(
-            console.log('User is now singed in with google!'),
-          )
-        }
+        onPress={() => onGoogleButtonPress()}
       />
     </View>
   )

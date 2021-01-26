@@ -17,7 +17,6 @@ import React, { useContext, useEffect, useState } from 'react'
 
 import AuthContext from '../auth/context'
 import Facebook from './FacebookLoginScreen'
-import Google from './GoogleLoginScreen'
 import Screen from './Screen'
 import auth from '@react-native-firebase/auth'
 import firebase from 'firebase'
@@ -29,7 +28,6 @@ const LoginScreen = () => {
   return (
     <Screen style={styles.container}>
       <Text style={styles.textcsadolor}>LoginScreen</Text>
-      <Google />
       <View>
         <Facebook />
       </View>

@@ -19,7 +19,6 @@ import {
 import React, { useContext, useEffect, useState } from 'react'
 
 import AuthContext from '../auth/context'
-import GoogleData from './GoogleLoginScreen'
 import Loading from '../components/Loading'
 import UserCard from '../components/userCard'
 import auth from '@react-native-firebase/auth'
@@ -50,13 +49,6 @@ export default function MainScreen({ navigation }) {
             ...documentSnapshot.data(),
           }
         })
-
-        messaging()
-          .getToken()
-          .then((token) => {
-            console.log('FIREBASE TOKEN =>' + token)
-          })
-        console.log(auth().currentUser.uid)
         console.log('Chatrooms refreshed')
 
         setChatRoom(chatroom)

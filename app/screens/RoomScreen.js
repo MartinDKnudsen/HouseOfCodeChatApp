@@ -258,7 +258,7 @@ export default function RoomScreen({ route }) {
         console.log('fileSize -> ', response.fileSize)
         console.log('type -> ', response.type)
         console.log('fileName -> ', response.fileName)
-        setFilePath(respone.uri)
+        setFilePath(response.uri)
       })
     }
   }
