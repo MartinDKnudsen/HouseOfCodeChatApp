@@ -40,6 +40,7 @@ export default function RoomScreen({ route }) {
   const { chatRoom_id } = route.params
   useStatsBar('light-content')
   console.log(chatRoom_id)
+
   const cloudinaryUpload = (photo) => {
     const data = new FormData()
     data.append('file', photo)
@@ -77,67 +78,70 @@ export default function RoomScreen({ route }) {
         },
       })
   }
-
   useEffect(() => {
-    var maxMessages = firestore()
-      .collection('Chats')
-      .doc(chatRoom_id)
-      .collection('MESSAGES')
-      .onSnapshot((querySnapShot) => {
-        maxMsg = querySnapShot.size
-        console.log('NOW maxMSG should be: ' + maxMsg)
-      })
-
-    console.log('BUT NOW IT IS ' + maxMsg)
-
-    if (maxMsg - numberOfMessagesToLoad < 0) {
-      console.log('No more messages to load')
-    } else {
-      numberOfMessagesToLoad += 10
-    }
-
-    console.log(numberOfMessagesToLoad)
-
-    if (numberOfMessagesToLoad > 1) {
-      const messagesListener = firestore()
+    if (user != null) {
+      var maxMessages = firestore()
         .collection('Chats')
         .doc(chatRoom_id)
         .collection('MESSAGES')
-        .orderBy('createdAt', 'desc')
-        .limit(numberOfMessagesToLoad)
-        .onSnapshot((querySnapshot) => {
-          const messagesFromFirebase = querySnapshot.docs.map((doc) => {
-            const firebaseData = doc.data()
-            // console.log('fb ', firebaseData)
-            const data = {
-              _id: doc.id,
-              text: '',
-              image: '',
-              createdAt: new Date().getTime(),
-              ...firebaseData,
-            }
-
-            if (!firebaseData.system) {
-              data.user = {
-                ...firebaseData.user,
-                name: firebaseData.user._id,
-              }
-            }
-            return data
-          })
-
-          console.log('Messages refreshed')
-          // console.log('THERE ARE CURRENTLY => ' + messagesFromFirebase.length)
-          setMessages(messagesFromFirebase)
-
-          if (messagesListener != null) {
-            console.log('NOT NULL')
+        .onSnapshot((querySnapShot) => {
+          if (querySnapShot != null) {
+            maxMsg = querySnapShot.size
+            console.log('NOW maxMSG should be: ' + maxMsg)
           }
         })
-      // Stop listening for updates whenever the component unmounts
-      return () => messagesListener()
-    } else {
-      console.log('No more messages to load')
+
+      console.log('BUT NOW IT IS ' + maxMsg)
+
+      if (maxMsg - numberOfMessagesToLoad < 0) {
+        console.log('No more messages to load')
+      } else {
+        numberOfMessagesToLoad += 10
+      }
+
+      console.log(numberOfMessagesToLoad)
+
+      if (numberOfMessagesToLoad > 1) {
+        const messagesListener = firestore()
+          .collection('Chats')
+          .doc(chatRoom_id)
+          .collection('MESSAGES')
+          .orderBy('createdAt', 'desc')
+          .limit(numberOfMessagesToLoad)
+          .onSnapshot((querySnapshot) => {
+            const messagesFromFirebase = querySnapshot.docs.map((doc) => {
+              const firebaseData = doc.data()
+              // console.log('fb ', firebaseData)
+              const data = {
+                _id: doc.id,
+                text: '',
+                image: '',
+                createdAt: new Date().getTime(),
+                ...firebaseData,
+              }
+
+              if (!firebaseData.system) {
+                data.user = {
+                  ...firebaseData.user,
+                  name: firebaseData.user._id,
+                }
+              }
+              return data
+            })
+
+            console.log('Messages refreshed')
+            // console.log('THERE ARE CURRENTLY => ' + messagesFromFirebase.length)
+            setMessages(messagesFromFirebase)
+
+            if (messagesListener != null) {
+              console.log('NOT NULL')
+            }
+          })
+        // Stop listening for updates whenever the component unmounts
+        return () => messagesListener()
+      } else {
+        console.log('No more messages to load')
+      }
     }
   }, [refreshMessages])
 

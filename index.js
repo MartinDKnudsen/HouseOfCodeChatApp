@@ -11,20 +11,4 @@ import auth from '@react-native-firebase/auth'
 import firestore from '@react-native-firebase/firestore'
 import messaging from '@react-native-firebase/messaging'
 
-messaging().setBackgroundMessageHandler(async (remoteMessage) => {
-  console.log('Message handled in the background!', remoteMessage)
-})
-
-messaging().onNotificationOpenedApp(async (remoteMessage) => {
-  const navigation = useNavigation()
-  navigation.navigate('Room', { chatRoom_id: EjYgjvPpvTOOJwrrPqyo })
-})
-
-messaging()
-  .getToken()
-  .then((token) => {
-    console.log('FIREBASE TOKEN => ' + token)
-  })
-console.log('Current user id on firebase: ' + auth().currentUser.uid)
-
 AppRegistry.registerComponent(appName, () => App)
