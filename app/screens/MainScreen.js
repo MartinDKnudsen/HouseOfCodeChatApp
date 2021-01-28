@@ -91,7 +91,10 @@ export default function MainScreen({ navigation }) {
         renderItem={({ item }) => (
           <TouchableOpacity
             onPress={() =>
-              navigation.navigate('Room', { chatRoom_id: item._id })
+              navigation.navigate('Room', {
+                chatRoom_id: item._id,
+                Room_Name: item.name,
+              })
             }>
             <List.Item
               title={item.name}

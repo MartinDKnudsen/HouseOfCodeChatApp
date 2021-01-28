@@ -39,7 +39,9 @@ function ChatApp() {
     try {
       await GoogleSignin.revokeAccess()
       await GoogleSignin.signOut()
-      if (user != null) setUser(null)
+      if (user != null) {
+        setUser(null)
+      }
       console.log('User is now signed out')
     } catch (error) {
       console.error(error)

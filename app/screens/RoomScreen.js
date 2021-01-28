@@ -39,6 +39,7 @@ export default function RoomScreen({ route }) {
 
   const { user } = useContext(AuthContext)
   const { chatRoom_id } = route.params
+  const { Room_Name } = route.params
   useStatsBar('light-content')
   //console.log(chatRoom_id)
 
@@ -58,8 +59,8 @@ export default function RoomScreen({ route }) {
         },
       })
     PushNotification.localNotification({
-      title: 'Hey',
-      message: 'sup',
+      title: "New massage in: '" + Room_Name + "' from " + user.name,
+      message: text,
     })
   }
   useEffect(() => {
@@ -75,7 +76,7 @@ export default function RoomScreen({ route }) {
           }
         })
 
-      console.log('BUT NOW IT IS ' + maxMsg)
+      // console.log('BUT NOW IT IS ' + maxMsg)
 
       if (maxMsg - numberOfMessagesToLoad < 0) {
         console.log('No more messages to load')
