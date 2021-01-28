@@ -24,6 +24,7 @@ import React, { useContext, useEffect, useState } from 'react'
 
 import AuthContext from '../auth/context'
 import { IconButton } from 'react-native-paper'
+import PushNotification from 'react-native-push-notification'
 import colors from '../config/colors'
 import firestore from '@react-native-firebase/firestore'
 import useStatsBar from '../utils/useStatusBar'
@@ -39,28 +40,7 @@ export default function RoomScreen({ route }) {
   const { user } = useContext(AuthContext)
   const { chatRoom_id } = route.params
   useStatsBar('light-content')
-  console.log(chatRoom_id)
-
-  const cloudinaryUpload = (photo) => {
-    const data = new FormData()
-    data.append('file', photo)
-    data.append('upload_preset', 'chatApp')
-    data.append('cloud_name', 'dvya2cgfo')
-    fetch('https://api.cloudinary.com/v1_1/dvya2cgfo/image/upload', {
-      method: 'post',
-      body: data,
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        console.log('data ', data)
-        setText(' ')
-        setFilePath(data.secure_url)
-      })
-      .catch((err) => {
-        console.log('error is ', err)
-        alert('An Error Occured While Uploading')
-      })
-  }
+  //console.log(chatRoom_id)
 
   async function handleSend(messages) {
     firestore()
@@ -77,6 +57,10 @@ export default function RoomScreen({ route }) {
           avatar: user.picture,
         },
       })
+    PushNotification.localNotification({
+      title: 'Hey',
+      message: 'sup',
+    })
   }
   useEffect(() => {
     if (user != null) {
@@ -87,7 +71,7 @@ export default function RoomScreen({ route }) {
         .onSnapshot((querySnapShot) => {
           if (querySnapShot != null) {
             maxMsg = querySnapShot.size
-            console.log('NOW maxMSG should be: ' + maxMsg)
+            // console.log('NOW maxMSG should be: ' + maxMsg)
           }
         })
 
@@ -99,7 +83,7 @@ export default function RoomScreen({ route }) {
         numberOfMessagesToLoad += 10
       }
 
-      console.log(numberOfMessagesToLoad)
+      // console.log(numberOfMessagesToLoad)
 
       if (numberOfMessagesToLoad > 1) {
         const messagesListener = firestore()
@@ -129,12 +113,12 @@ export default function RoomScreen({ route }) {
               return data
             })
 
-            console.log('Messages refreshed')
+            //  console.log('Messages refreshed')
             // console.log('THERE ARE CURRENTLY => ' + messagesFromFirebase.length)
             setMessages(messagesFromFirebase)
 
             if (messagesListener != null) {
-              console.log('NOT NULL')
+              // console.log('NOT NULL')
             }
           })
         // Stop listening for updates whenever the component unmounts
@@ -145,6 +129,7 @@ export default function RoomScreen({ route }) {
     }
   }, [refreshMessages])
 
+  //Renders > _______________________________________________________
   function renderBubble(props) {
     const { currentMessage } = props
     //  console.log(' props in bubble ', currentMessage)
@@ -184,6 +169,54 @@ export default function RoomScreen({ route }) {
       </Send>
     )
   }
+  function renderSystemMessage(props) {
+    return (
+      <SystemMessage
+        {...props}
+        wrapperStyle={styles.systemMessageWrapper}
+        textStyle={styles.systemMessageText}
+      />
+    )
+  }
+
+  function renderImageOptions(props) {
+    return (
+      <View>
+        <View style={styles.bottomComponentContainer}>
+          <IconButton
+            style={styles.CameraButtonsStyle}
+            icon="camera"
+            size={26}
+            color={colors.chatIcons}
+            onPress={() => captureImage('photo')}
+          />
+          <View
+            style={{
+              flexDirection: 'row',
+            }}>
+            <IconButton
+              style={styles.ImageButtonsStyle}
+              icon="file"
+              size={26}
+              color={colors.chatIcons}
+              onPress={() => chooseFile('photo')}
+            />
+            {filePath ? (
+              <Text
+                style={{
+                  alignSelf: 'center',
+                }}>
+                {' '}
+              </Text>
+            ) : null}
+          </View>
+        </View>
+      </View>
+    )
+  }
+  //******************Handle images*****************
+  //< Renders _______________________________________________________
+
   function LoadEarlierMessages() {
     startRefreshMessages(refreshMessages + 1)
   }
@@ -196,17 +229,30 @@ export default function RoomScreen({ route }) {
     )
   }
 
-  function renderSystemMessage(props) {
-    return (
-      <SystemMessage
-        {...props}
-        wrapperStyle={styles.systemMessageWrapper}
-        textStyle={styles.systemMessageText}
-      />
-    )
+  //******************Handle images  */
+
+  //Upload image to cloudinary
+  const cloudinaryUpload = (photo) => {
+    const data = new FormData()
+    data.append('file', photo)
+    data.append('upload_preset', 'chatApp')
+    data.append('cloud_name', 'dvya2cgfo')
+    fetch('https://api.cloudinary.com/v1_1/dvya2cgfo/image/upload', {
+      method: 'post',
+      body: data,
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        console.log('data ', data)
+        setText(' ')
+        setFilePath(data.secure_url)
+      })
+      .catch((err) => {
+        console.log('error is ', err)
+        alert('An Error Occured While Uploading')
+      })
   }
 
-  //******************Handle images  */
   const requestCameraPermission = async () => {
     if (Platform.OS === 'android') {
       try {
@@ -320,43 +366,6 @@ export default function RoomScreen({ route }) {
       setText(' ')
     })
   }
-
-  function renderImageOptions(props) {
-    return (
-      <View>
-        <View style={styles.bottomComponentContainer}>
-          <IconButton
-            style={styles.CameraButtonsStyle}
-            icon="camera"
-            size={26}
-            color={colors.chatIcons}
-            onPress={() => captureImage('photo')}
-          />
-          <View
-            style={{
-              flexDirection: 'row',
-            }}>
-            <IconButton
-              style={styles.ImageButtonsStyle}
-              icon="file"
-              size={26}
-              color={colors.chatIcons}
-              onPress={() => chooseFile('photo')}
-            />
-            {filePath ? (
-              <Text
-                style={{
-                  alignSelf: 'center',
-                }}>
-                {' '}
-              </Text>
-            ) : null}
-          </View>
-        </View>
-      </View>
-    )
-  }
-  //******************Handle images*****************
 
   return (
     <GiftedChat
