@@ -253,7 +253,7 @@ export default function RoomScreen({ route }) {
         alert('An Error Occured While Uploading')
       })
   }
-  //
+  //Request Premissions >
   const requestCameraPermission = async () => {
     if (Platform.OS === 'android') {
       try {
@@ -292,6 +292,7 @@ export default function RoomScreen({ route }) {
       return false
     } else return true
   }
+  // < Request Premissions
 
   const captureImage = async (type) => {
     let options = {
