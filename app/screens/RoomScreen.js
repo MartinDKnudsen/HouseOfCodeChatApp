@@ -253,7 +253,7 @@ export default function RoomScreen({ route }) {
         alert('An Error Occured While Uploading')
       })
   }
-
+  //
   const requestCameraPermission = async () => {
     if (Platform.OS === 'android') {
       try {
@@ -320,14 +320,14 @@ export default function RoomScreen({ route }) {
           alert(response.errorMessage)
           return
         }
-        console.log('base64 -> ', response.base64)
-        console.log('uri -> ', response.uri)
-        console.log('width -> ', response.width)
-        console.log('height -> ', response.height)
-        console.log('fileSize -> ', response.fileSize)
-        console.log('type -> ', response.type)
-        console.log('fileName -> ', response.fileName)
-        setFilePath(response.uri)
+        const { uri, type, fileName } = response
+        const name = fileName
+        const source = {
+          uri,
+          type,
+          name,
+        }
+        cloudinaryUpload(source)
       })
     }
   }
@@ -355,16 +355,14 @@ export default function RoomScreen({ route }) {
         alert(response.errorMessage)
         return
       }
-      console.log('base64 -> ', response.base64)
-      console.log('uri -> ', response.uri)
-      console.log('width -> ', response.width)
-      console.log('height -> ', response.height)
-      console.log('fileSize -> ', response.fileSize)
-      console.log('type -> ', response.type)
-      console.log('fileName -> ', response.fileName)
-      setFilePath(response.uri)
-
-      setText(' ')
+      const { uri, type, fileName } = response
+      const name = fileName
+      const source = {
+        uri,
+        type,
+        name,
+      }
+      cloudinaryUpload(source)
     })
   }
 
