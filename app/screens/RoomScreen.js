@@ -27,8 +27,10 @@ import { IconButton } from 'react-native-paper'
 import PushNotification from 'react-native-push-notification'
 import colors from '../config/colors'
 import firestore from '@react-native-firebase/firestore'
+import messaging from '@react-native-firebase/messaging'
 import useStatsBar from '../utils/useStatusBar'
 
+var AskedUserForNotification = false
 var numberOfMessagesToLoad = 0
 var maxMsg = 0
 export default function RoomScreen({ route }) {
@@ -36,12 +38,11 @@ export default function RoomScreen({ route }) {
   const [filePath, setFilePath] = useState('')
   const [text, setText] = useState(null)
   const [refreshMessages, startRefreshMessages] = useState(0)
-
   const { user } = useContext(AuthContext)
   const { chatRoom_id } = route.params
   const { Room_Name } = route.params
   useStatsBar('light-content')
-  //console.log(chatRoom_id)
+  console.log(chatRoom_id)
 
   async function handleSend(messages) {
     firestore()
@@ -58,10 +59,37 @@ export default function RoomScreen({ route }) {
           avatar: user.picture,
         },
       })
-    PushNotification.localNotification({
-      title: "New massage in: '" + Room_Name + "' from " + user.name,
-      message: text,
-    })
+    //PushNotification.localNotification({
+    //  title: "New massage in: '" + Room_Name + "' from " + user.name,
+    //  message: text,
+    // })
+
+    if (AskedUserForNotification == false) {
+      Alert.alert(
+        'Notifications?',
+        'Would you like to revice notifications from this room?',
+        [
+          {
+            text: 'Yes',
+            onPress: () =>
+              messaging()
+                .subscribeToTopic(chatRoom_id)
+                .then(() => console.log('Subscribed to topic!'))
+                .then((AskedUserForNotification = true)),
+          },
+
+          {
+            text: 'No',
+            onPress: () =>
+              messaging()
+                .unsubscribeFromTopic(chatRoom_id)
+                .then(() => console.log('Unsubscribed fom the topic!'))
+                .then((AskedUserForNotification = true)),
+          },
+        ],
+        { cancelable: false },
+      )
+    }
   }
   useEffect(() => {
     if (user != null) {
@@ -83,7 +111,6 @@ export default function RoomScreen({ route }) {
       } else {
         numberOfMessagesToLoad += 10
       }
-
       // console.log(numberOfMessagesToLoad)
 
       if (numberOfMessagesToLoad > 1) {

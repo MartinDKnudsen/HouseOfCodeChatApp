@@ -23,6 +23,12 @@ PushNotification.configure({
     console.log('NOTIFICATION:', notification)
   },
 })
+
+// Register background handler
+messaging().setBackgroundMessageHandler(async (remoteMessage) => {
+  console.log('Message handled in the background!', remoteMessage)
+})
+
 PushNotification.createChannel(
   {
     channelId: 'channel-id', // (required)
