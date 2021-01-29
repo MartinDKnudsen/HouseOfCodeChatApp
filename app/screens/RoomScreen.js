@@ -41,6 +41,7 @@ export default function RoomScreen({ route }) {
   const { user } = useContext(AuthContext)
   const { chatRoom_id } = route.params
   const { Room_Name } = route.params
+
   useStatsBar('light-content')
   console.log(chatRoom_id)
 
@@ -58,12 +59,17 @@ export default function RoomScreen({ route }) {
           email: user.email,
           avatar: user.picture,
         },
+        room_Name: Room_Name,
+        ChatRoom_id: chatRoom_id,
       })
-    PushNotification.localNotification({
-      title: "New massage in: '" + Room_Name + "' from " + user.name,
-      message: text,
-      chatRoom_id: chatRoom_id,
-    })
+      .then(function (docRef) {
+        console.log('Document written with ID: ', docRef.id)
+      })
+    // PushNotification.localNotification({
+    //title: "New massage in: '" + Room_Name + "' from " + user.name,
+    // message: text,
+    // chatRoom_id: chatRoom_id,
+    // })
 
     if (AskedUserForNotification == false) {
       Alert.alert(
@@ -116,7 +122,6 @@ export default function RoomScreen({ route }) {
         .onSnapshot((querySnapShot) => {
           if (querySnapShot != null) {
             maxMsg = querySnapShot.size
-            // console.log('NOW maxMSG should be: ' + maxMsg)
           }
         })
 
