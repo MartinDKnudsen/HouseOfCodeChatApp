@@ -19,17 +19,16 @@ exports.sendNotificationToTopic = functions.firestore
 
 exports.sendNotificationMessageToTopic = functions.firestore
 .document("Chats/{room_id}")
-.onWrite(async (change, context) => {
-const name = context.params.name;
-
+.onWrite(async (context) => {
+const name = JSON.stringify(context);
     const message = {
-    notification: {
+      notification: {
         title: "Hey",
         body: "Works",
-        },
-     topic: "jem5UU7MS2qOBLTA97jD",
-     data: {room_id: "TEST"},
-      };
+      },
+      topic: "jem5UU7MS2qOBLTA97jD",
+      data: {room_id: name},
+    };
       const response = await admin.messaging().send(message);
       console.log(response); console.log(name);
 });
