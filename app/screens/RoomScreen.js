@@ -59,10 +59,11 @@ export default function RoomScreen({ route }) {
           avatar: user.picture,
         },
       })
-    //PushNotification.localNotification({
-    //  title: "New massage in: '" + Room_Name + "' from " + user.name,
-    //  message: text,
-    // })
+    PushNotification.localNotification({
+      title: "New massage in: '" + Room_Name + "' from " + user.name,
+      message: text,
+      chatRoom_id: chatRoom_id,
+    })
 
     if (AskedUserForNotification == false) {
       Alert.alert(
@@ -90,7 +91,22 @@ export default function RoomScreen({ route }) {
         { cancelable: false },
       )
     }
+
+    //Makes sure that the room with the newest message is showed on top af the MainScreen
+    await firestore()
+      .collection('Chats')
+      .doc(chatRoom_id)
+      .set(
+        {
+          latestMessage: {
+            text,
+            createdAt: new Date().getTime(),
+          },
+        },
+        { merge: true },
+      )
   }
+
   useEffect(() => {
     if (user != null) {
       var maxMessages = firestore()

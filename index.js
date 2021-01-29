@@ -22,6 +22,13 @@ PushNotification.configure({
   onNotification: function (notification) {
     console.log('NOTIFICATION:', notification)
   },
+
+  onAction: function (notification) {
+    // console.log('ACTION:', notification.action)
+    //console.log('NOTIFICATION:', notification)
+    console.log('Room id is: ', notification.chatRoom_id)
+    // process the action
+  },
 })
 
 // Register background handler

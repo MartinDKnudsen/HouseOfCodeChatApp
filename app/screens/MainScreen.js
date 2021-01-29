@@ -37,35 +37,31 @@ export default function MainScreen({ navigation }) {
    * Fetch messages from Firestore
    */
 
-  try {
-    useEffect(() => {
-      const unsubscribe = firestore()
-        .collection('Chats')
-        .orderBy('latestMessage.createdAt', 'desc')
-        .onSnapshot((querySnapshot) => {
-          const chatroom = querySnapshot.docs.map((documentSnapshot) => {
-            return {
-              _id: documentSnapshot.id,
-              // give defaults
-              name: '',
-              ...documentSnapshot.data(),
-            }
-          })
-
-          console.log('Chatrooms refreshed')
-
-          setChatRoom(chatroom)
-
-          if (loading) {
-            setLoading(false)
+  useEffect(() => {
+    const unsubscribe = firestore()
+      .collection('Chats')
+      .orderBy('latestMessage.createdAt', 'desc')
+      .onSnapshot((querySnapshot) => {
+        const chatroom = querySnapshot.docs.map((documentSnapshot) => {
+          return {
+            _id: documentSnapshot.id,
+            // give defaults
+            name: '',
+            ...documentSnapshot.data(),
           }
         })
 
-      return () => unsubscribe()
-    }, [refreshData])
-  } catch (error) {
-    console.log(error)
-  }
+        console.log('Chatrooms refreshed')
+
+        setChatRoom(chatroom)
+
+        if (loading) {
+          setLoading(false)
+        }
+      })
+
+    return () => unsubscribe()
+  }, [refreshData])
 
   if (loading) {
     return <Loading />
