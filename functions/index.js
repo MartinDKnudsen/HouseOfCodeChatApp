@@ -9,10 +9,27 @@ exports.sendNotificationToTopic = functions.firestore
       notification: {
         title: "Hey",
         body: "Works",
-        roomid: "jem5UU7MS2qOBLTA97jD",
       },
       topic: "jem5UU7MS2qOBLTA97jD",
+      data: {room_id: "jem5UU7MS2qOBLTA97jD"},
     };
-    const response = await admin.messaging().send(message);
+   const response = await admin.messaging().send(message);
     console.log(response);
   });
+
+exports.sendNotificationMessageToTopic = functions.firestore
+.document("Chats/{room_id}")
+.onWrite(async (change, context) => {
+const name = context.params.name;
+
+    const message = {
+    notification: {
+        title: "Hey",
+        body: "Works",
+        },
+     topic: "jem5UU7MS2qOBLTA97jD",
+     data: {room_id: "TEST"},
+      };
+      const response = await admin.messaging().send(message);
+      console.log(response); console.log(name);
+});

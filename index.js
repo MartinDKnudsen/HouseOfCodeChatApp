@@ -33,7 +33,8 @@ PushNotification.configure({
 
 // Register background handler
 messaging().setBackgroundMessageHandler(async (remoteMessage) => {
-  console.log('Message handled in the background!', remoteMessage)
+ // console.log('Message handled in the background!', remoteMessage)
+  console.log('The room id is ' + remoteMessage.data.room_id)
 })
 
 PushNotification.createChannel(
