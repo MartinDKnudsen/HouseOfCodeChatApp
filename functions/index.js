@@ -9,6 +9,7 @@ exports.sendNotificationToTopic = functions.firestore
       notification: {
         title: "Hey",
         body: "Works",
+        roomid: "jem5UU7MS2qOBLTA97jD",
       },
       topic: "jem5UU7MS2qOBLTA97jD",
     };

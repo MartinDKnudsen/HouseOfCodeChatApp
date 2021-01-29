@@ -6,8 +6,11 @@ module.exports = {
   },
   extends: ["eslint:recommended", "google"],
   rules: {
-    quotes: ["error", "double"],
-    indent: "off",
+    "quotes": ["error", "double"],
+    "indent": "off",
+	"no-tabs": "off",
+	"eol-last": "off",
+	"no-trailing-spaces": "off",
   },
   parser: "babel-eslint",
 };
