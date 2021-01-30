@@ -2,33 +2,20 @@ const functions = require("firebase-functions");
 const admin = require("firebase-admin");
 admin.initializeApp(functions.config().firebase);
 
-exports.sendNotificationToTopic = functions.firestore
-  .document("Chats/jem5UU7MS2qOBLTA97jD")
-  .onWrite(async (event) => {
-    const message = {
-      notification: {
-        title: "Hey",
-        body: "Works",
-      },
-      topic: "jem5UU7MS2qOBLTA97jD",
-      data: {room_id: "jem5UU7MS2qOBLTA97jD"},
-    };
-   const response = await admin.messaging().send(message);
-    console.log(response);
-  });
-
-exports.sendNotificationMessageToTopic = functions.firestore
+exports.sendNotificationOnMessageToSubscribers = functions.firestore
 .document("Chats/{room_id}")
 .onWrite(async (context) => {
-const name = JSON.stringify(context);
+const id = context["before"]["_ref"]["_path"]["segments"][1];
+const titleText = context["after"]["_fieldsProto"]["latestMessage"]["mapValue"]["fields"]["text"]["stringValue"];
+const roomName = context["after"]["_fieldsProto"]["name"]["stringValue"];
+
     const message = {
       notification: {
-        title: "Hey",
-        body: "Works",
+        title: "Room: " + roomName + " has a new message",
+        body: titleText,
       },
-      topic: "jem5UU7MS2qOBLTA97jD",
-      data: {room_id: name},
+      topic: id,
+      data: {room_id: id},
     };
-      const response = await admin.messaging().send(message);
-      console.log(response); console.log(name);
+      await admin.messaging().send(message);
 });

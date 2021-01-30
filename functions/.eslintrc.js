@@ -11,6 +11,7 @@ module.exports = {
 	"no-tabs": "off",
 	"eol-last": "off",
 	"no-trailing-spaces": "off",
+	"max-len": "off",
   },
   parser: "babel-eslint",
 };

@@ -20,13 +20,13 @@ PushNotification.configure({
 
   // (required) Called when a remote is received or opened, or local notification is opened
   onNotification: function (notification) {
-    console.log('NOTIFICATION:', notification)
+    console.log("ON NOTIFICATION:", notification.data.room_id)
   },
 
   onAction: function (notification) {
     // console.log('ACTION:', notification.action)
     //console.log('NOTIFICATION:', notification)
-    console.log('Room id is: ', notification.chatRoom_id)
+    console.log("OPEND Notifiction: ", notification.data.room_id)
     // process the action
   },
 })
@@ -34,7 +34,7 @@ PushNotification.configure({
 // Register background handler
 messaging().setBackgroundMessageHandler(async (remoteMessage) => {
  // console.log('Message handled in the background!', remoteMessage)
-  console.log('The room id is ' + remoteMessage.data.room_id)
+  console.log("new message")
 })
 
 PushNotification.createChannel(
