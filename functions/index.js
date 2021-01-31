@@ -15,7 +15,7 @@ const roomName = context["after"]["_fieldsProto"]["name"]["stringValue"];
         body: titleText,
       },
       topic: id,
-      data: {room_id: id},
+      data: {room_id: id, room_name: roomName},
     };
       await admin.messaging().send(message);
 });

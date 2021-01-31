@@ -20,7 +20,7 @@ PushNotification.configure({
 
   // (required) Called when a remote is received or opened, or local notification is opened
   onNotification: function (notification) {
-    console.log("ON NOTIFICATION:", notification.data.room_id)
+    console.log("ON NOTIFICATION:", notification)
   },
 
   onAction: function (notification) {

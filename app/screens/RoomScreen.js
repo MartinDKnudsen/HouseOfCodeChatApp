@@ -22,6 +22,7 @@ import {
 } from 'react-native-image-picker'
 import React, { useContext, useEffect, useState } from 'react'
 
+import { AsyncStorage } from "react-native"
 import AuthContext from '../auth/context'
 import { IconButton } from 'react-native-paper'
 import PushNotification from 'react-native-push-notification'
@@ -43,9 +44,83 @@ export default function RoomScreen({ route }) {
   const { Room_Name } = route.params
 
   useStatsBar('light-content')
-  console.log(chatRoom_id)
+  //console.log(chatRoom_id)
 
-  async function handleSend(messages) {
+ const importData = async () => {
+   try {
+     const keys = await AsyncStorage.getAllKeys()
+     const result = await AsyncStorage.multiGet(keys)
+
+     return result.map((req) => (req)).typeOf(req)
+   } catch (error) {
+     console.log(error)
+   }
+}
+
+const USER_1 = {
+  name: user.name,
+  chatRooms: {
+chatRoom_id
+  },
+}
+
+
+const mergeUsers = async () => {
+  try {
+    //save first user
+    await AsyncStorage.setItem(user.email, JSON.stringify(USER_1))
+
+    // merge USER_2 into saved USER_1
+    //await AsyncStorage.mergeItem("@MyApp_user", JSON.stringify(USER_2))
+
+    // read merged item
+    const currentUser = await AsyncStorage.getItem(user.email)
+const test = currentUser.hasOwnProperty('chatRooms')
+    console.log(test)
+  }
+catch(error)
+{
+	console.log(error)
+}
+}
+
+const userAskedForNotifications = async () => 
+{
+ try {
+   let value = await AsyncStorage.getItem(user.email)
+   if (value != null) {
+     // do something
+	 if (value !== chatRoom_id) 
+	 {
+		 console.log("USER not asked about ")
+	 }
+
+	//let roomID = AsyncStorage.getItem(chatRoom_id)
+	//if(roomID !== null)
+	//{console.log("and a key => " + roomID)	
+	//}else{
+	//	console.log("no key")}
+   } 
+   else {
+	 console.log("No such user")
+     // do something else
+   }
+ } catch (error) {
+   // Error retrieving data
+ }
+}
+
+const setStringValue = async () => {
+
+AsyncStorage.getItem("contacts").then((contacts) => {
+  const c = contacts ? JSON.parse(contacts) : []
+  c.push(con)
+  AsyncStorage.setItem("contacts", JSON.stringify(c))
+})
+
+}
+
+async function handleSend(messages) {
     firestore()
       .collection('Chats')
       .doc(chatRoom_id)
@@ -63,40 +138,40 @@ export default function RoomScreen({ route }) {
         ChatRoom_id: chatRoom_id,
       })
       .then(function (docRef) {
-        console.log('Document written with ID: ', docRef.id)
+      //  console.log('Document written with ID: ', docRef.id)
       })
-    // PushNotification.localNotification({
-    //title: "New massage in: '" + Room_Name + "' from " + user.name,
-    // message: text,
-    // chatRoom_id: chatRoom_id,
-    // })
 
-    if (AskedUserForNotification == false) {
-      Alert.alert(
-        'Notifications?',
-        'Would you like to revice notifications from this room?',
-        [
-          {
-            text: 'Yes',
-            onPress: () =>
-              messaging()
-                .subscribeToTopic(chatRoom_id)
-                .then(() => console.log('Subscribed to topic!'))
-                .then((AskedUserForNotification = true)),
-          },
+//saveData()
+//AsyncStorage.clear()
+//setStringValue()
+mergeUsers()
+importData()
+    // if (AskedUserForNotification == false) {
+    //   Alert.alert(
+    //     'Notifications?',
+    //     'Would you like to revice notifications from this room?',
+    //     [
+    //       {
+    //         text: 'Yes',
+    //         onPress: () =>
+    //           messaging()
+    //             .subscribeToTopic(chatRoom_id)
+    //             .then(() => console.log('Subscribed to topic!'))
+    //             .then((AskedUserForNotification = true)),
+    //       },
 
-          {
-            text: 'No',
-            onPress: () =>
-              messaging()
-                .unsubscribeFromTopic(chatRoom_id)
-                .then(() => console.log('Unsubscribed fom the topic!'))
-                .then((AskedUserForNotification = true)),
-          },
-        ],
-        { cancelable: false },
-      )
-    }
+    //       {
+    //         text: 'No',
+    //         onPress: () =>
+    //           messaging()
+    //             .unsubscribeFromTopic(chatRoom_id)
+    //             .then(() => console.log('Unsubscribed fom the topic!'))
+    //             .then((AskedUserForNotification = true)),
+    //       },
+    //     ],
+    //     { cancelable: false },
+    //   )
+    // }
 
     //Makes sure that the room with the newest message is showed on top af the MainScreen
     await firestore()
@@ -125,14 +200,11 @@ export default function RoomScreen({ route }) {
           }
         })
 
-      // console.log('BUT NOW IT IS ' + maxMsg)
-
       if (maxMsg - numberOfMessagesToLoad < 0) {
         console.log('No more messages to load')
       } else {
         numberOfMessagesToLoad += 10
       }
-      // console.log(numberOfMessagesToLoad)
 
       if (numberOfMessagesToLoad > 1) {
         const messagesListener = firestore()
@@ -161,16 +233,12 @@ export default function RoomScreen({ route }) {
               }
               return data
             })
-
-            //  console.log('Messages refreshed')
-            // console.log('THERE ARE CURRENTLY => ' + messagesFromFirebase.length)
             setMessages(messagesFromFirebase)
 
             if (messagesListener != null) {
               // console.log('NOT NULL')
             }
           })
-        // Stop listening for updates whenever the component unmounts
         return () => messagesListener()
       } else {
         console.log('No more messages to load')
