@@ -22,12 +22,16 @@ import {
 } from 'react-native-image-picker'
 import React, { useContext, useEffect, useState } from 'react'
 
+import { AsyncStorage } from "react-native"
 import AuthContext from '../auth/context'
 import { IconButton } from 'react-native-paper'
+import PushNotification from 'react-native-push-notification'
 import colors from '../config/colors'
 import firestore from '@react-native-firebase/firestore'
+import messaging from '@react-native-firebase/messaging'
 import useStatsBar from '../utils/useStatusBar'
 
+var AskedUserForNotification = false
 var numberOfMessagesToLoad = 0
 var maxMsg = 0
 export default function RoomScreen({ route }) {
@@ -35,15 +39,88 @@ export default function RoomScreen({ route }) {
   const [filePath, setFilePath] = useState('')
   const [text, setText] = useState(null)
   const [refreshMessages, startRefreshMessages] = useState(0)
-
   const { user } = useContext(AuthContext)
   const { chatRoom_id } = route.params
-  useStatsBar('light-content')
+  const { Room_Name } = route.params
 
-  async function handleSend(messages) {
-    //console.log('1 ', messages)
-    // const text = messages[0].text
-    // console.log('in send ', filePath)
+  useStatsBar('light-content')
+  console.log(chatRoom_id)
+
+ const importData = async () => {
+   try {
+     const keys = await AsyncStorage.getAllKeys()
+     const result = await AsyncStorage.multiGet(keys)
+
+     return result.map((req) => (req)).forEach(console.log)
+   } catch (error) {
+     console.log(error)
+   }
+}
+
+const USER_1 = {
+  name: user.name,
+  chatRooms: {
+chatRoom_id
+  },
+}
+
+
+const mergeUsers = async () => {
+  try {
+    //save first user
+    await AsyncStorage.setItem(user.email, JSON.stringify(USER_1))
+
+    // merge USER_2 into saved USER_1
+    //await AsyncStorage.mergeItem("@MyApp_user", JSON.stringify(USER_2))
+
+    // read merged item
+    const currentUser = await AsyncStorage.getItem(user.email)
+const test = currentUser.hasOwnProperty('chatRooms')
+    console.log(test)
+  }
+catch(error)
+{
+	console.log(error)
+}
+}
+
+const userAskedForNotifications = async () => 
+{
+ try {
+   let value = await AsyncStorage.getItem(user.email)
+   if (value != null) {
+     // do something
+	 if (value !== chatRoom_id) 
+	 {
+		 console.log("USER not asked about ")
+	 }
+
+	//let roomID = AsyncStorage.getItem(chatRoom_id)
+	//if(roomID !== null)
+	//{console.log("and a key => " + roomID)	
+	//}else{
+	//	console.log("no key")}
+   } 
+   else {
+	 console.log("No such user")
+     // do something else
+   }
+ } catch (error) {
+   // Error retrieving data
+ }
+}
+
+const setStringValue = async () => {
+
+AsyncStorage.getItem("contacts").then((contacts) => {
+  const c = contacts ? JSON.parse(contacts) : []
+  c.push(con)
+  AsyncStorage.setItem("contacts", JSON.stringify(c))
+})
+
+}
+
+async function handleSend(messages) {
     firestore()
       .collection('Chats')
       .doc(chatRoom_id)
@@ -57,73 +134,119 @@ export default function RoomScreen({ route }) {
           email: user.email,
           avatar: user.picture,
         },
+        room_Name: Room_Name,
+        ChatRoom_id: chatRoom_id,
       })
+      .then(function (docRef) {
+      //  console.log('Document written with ID: ', docRef.id)
+      })
+
+//saveData()
+//AsyncStorage.clear()
+//setStringValue()
+//mergeUsers()
+//importData()
+    if (AskedUserForNotification == false) {
+      Alert.alert(
+        'Notifications?',
+        'Would you like to revice notifications from this room?',
+        [
+          {
+            text: 'Yes',
+            onPress: () =>
+              messaging()
+                .subscribeToTopic(chatRoom_id)
+                .then(() => console.log('Subscribed to topic!'))
+                .then((AskedUserForNotification = true)),
+          },
+
+          {
+            text: 'No',
+            onPress: () =>
+              messaging()
+                .unsubscribeFromTopic(chatRoom_id)
+                .then(() => console.log('Unsubscribed fom the topic!'))
+                .then((AskedUserForNotification = true)),
+          },
+        ],
+        { cancelable: false },
+      )
+    }
+
+    //Makes sure that the room with the newest message is showed on top af the MainScreen
+    await firestore()
+      .collection('Chats')
+      .doc(chatRoom_id)
+      .set(
+        {
+          latestMessage: {
+            text,
+            createdAt: new Date().getTime(),
+          },
+        },
+        { merge: true },
+      )
   }
 
   useEffect(() => {
-    var maxMessages = firestore()
-      .collection('Chats')
-      .doc(chatRoom_id)
-      .collection('MESSAGES')
-      .onSnapshot((querySnapShot) => {
-        maxMsg = querySnapShot.size
-        console.log('NOW maxMSG should be: ' + maxMsg)
-      })
-
-    console.log('BUT NOW IT IS ' + maxMsg)
-
-    if (maxMsg - numberOfMessagesToLoad < 0) {
-      console.log('No more messages to load')
-    } else {
-      numberOfMessagesToLoad += 10
-    }
-
-    console.log(numberOfMessagesToLoad)
-
-    if (numberOfMessagesToLoad > 1) {
-      const messagesListener = firestore()
+    if (user != null) {
+      var maxMessages = firestore()
         .collection('Chats')
         .doc(chatRoom_id)
         .collection('MESSAGES')
-        .orderBy('createdAt', 'desc')
-        .limit(numberOfMessagesToLoad)
-        .onSnapshot((querySnapshot) => {
-          const messagesFromFirebase = querySnapshot.docs.map((doc) => {
-            const firebaseData = doc.data()
-            // console.log('fb ', firebaseData)
-            const data = {
-              _id: doc.id,
-              text: '',
-              image: '',
-              createdAt: new Date().getTime(),
-              ...firebaseData,
-            }
-
-            if (!firebaseData.system) {
-              data.user = {
-                ...firebaseData.user,
-                name: firebaseData.user._id,
-              }
-            }
-            return data
-          })
-
-          console.log('Messages refreshed')
-          // console.log('THERE ARE CURRENTLY => ' + messagesFromFirebase.length)
-          setMessages(messagesFromFirebase)
-
-          if (messagesListener != null) {
-            console.log('NOT NULL')
+        .onSnapshot((querySnapShot) => {
+          if (querySnapShot != null) {
+            maxMsg = querySnapShot.size
           }
         })
-      // Stop listening for updates whenever the component unmounts
-      return () => messagesListener()
-    } else {
-      console.log('No more messages to load')
-      numberOfMessagesToLoad == 1
+
+      if (maxMsg - numberOfMessagesToLoad < 0) {
+        console.log('No more messages to load')
+      } else {
+        numberOfMessagesToLoad += 10
+      }
+
+      if (numberOfMessagesToLoad > 1) {
+        const messagesListener = firestore()
+          .collection('Chats')
+          .doc(chatRoom_id)
+          .collection('MESSAGES')
+          .orderBy('createdAt', 'desc')
+          .limit(numberOfMessagesToLoad)
+          .onSnapshot((querySnapshot) => {
+            const messagesFromFirebase = querySnapshot.docs.map((doc) => {
+              const firebaseData = doc.data()
+              // console.log('fb ', firebaseData)
+              const data = {
+                _id: doc.id,
+                text: '',
+                image: '',
+                createdAt: new Date().getTime(),
+                ...firebaseData,
+              }
+
+              if (!firebaseData.system) {
+                data.user = {
+                  ...firebaseData.user,
+                  name: firebaseData.user._id,
+                }
+              }
+              return data
+            })
+            setMessages(messagesFromFirebase)
+
+            if (messagesListener != null) {
+              // console.log('NOT NULL')
+            }
+          })
+        return () => messagesListener()
+      } else {
+        console.log('No more messages to load')
+      }
     }
   }, [refreshMessages])
 
+  //Renders > _______________________________________________________
   function renderBubble(props) {
     const { currentMessage } = props
     //  console.log(' props in bubble ', currentMessage)
@@ -163,18 +286,6 @@ export default function RoomScreen({ route }) {
       </Send>
     )
   }
-  function LoadEarlierMessages() {
-    startRefreshMessages(refreshMessages + 1)
-  }
-
-  function scrollToBottomComponent() {
-    return (
-      <View style={styles.bottomComponentContainer}>
-        <IconButton icon="chevron-double-down" size={36} color="#000" />
-      </View>
-    )
-  }
-
   function renderSystemMessage(props) {
     return (
       <SystemMessage
@@ -185,7 +296,80 @@ export default function RoomScreen({ route }) {
     )
   }
 
+  function renderImageOptions(props) {
+    return (
+      <View>
+        <View style={styles.bottomComponentContainer}>
+          <IconButton
+            style={styles.CameraButtonsStyle}
+            icon="camera"
+            size={26}
+            color={colors.chatIcons}
+            onPress={() => captureImage('photo')}
+          />
+          <View
+            style={{
+              flexDirection: 'row',
+            }}>
+            <IconButton
+              style={styles.ImageButtonsStyle}
+              icon="file"
+              size={26}
+              color={colors.chatIcons}
+              onPress={() => chooseFile('photo')}
+            />
+            {filePath ? (
+              <Text
+                style={{
+                  alignSelf: 'center',
+                }}>
+                {' '}
+              </Text>
+            ) : null}
+          </View>
+        </View>
+      </View>
+    )
+  }
+  //******************Handle images*****************
+  //< Renders _______________________________________________________
+
+  function LoadEarlierMessages() {
+    startRefreshMessages(refreshMessages + 1)
+  }
+
+  function scrollToBottomComponent() {
+    return (
+      <View style={styles.bottomComponentContainer}>
+        <IconButton icon="chevron-double-down" size={36} color={colors.black} />
+      </View>
+    )
+  }
+
   //******************Handle images  */
+
+  //Upload image to cloudinary
+  const cloudinaryUpload = (photo) => {
+    const data = new FormData()
+    data.append('file', photo)
+    data.append('upload_preset', 'chatApp')
+    data.append('cloud_name', 'dvya2cgfo')
+    fetch('https://api.cloudinary.com/v1_1/dvya2cgfo/image/upload', {
+      method: 'post',
+      body: data,
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        console.log('data ', data)
+        setText(' ')
+        setFilePath(data.secure_url)
+      })
+      .catch((err) => {
+        console.log('error is ', err)
+        alert('An Error Occured While Uploading')
+      })
+  }
+  //Request Premissions >
   const requestCameraPermission = async () => {
     if (Platform.OS === 'android') {
       try {
@@ -224,6 +408,7 @@ export default function RoomScreen({ route }) {
       return false
     } else return true
   }
+  // < Request Premissions
 
   const captureImage = async (type) => {
     let options = {
@@ -252,14 +437,14 @@ export default function RoomScreen({ route }) {
           alert(response.errorMessage)
           return
         }
-        console.log('base64 -> ', response.base64)
-        console.log('uri -> ', response.uri)
-        console.log('width -> ', response.width)
-        console.log('height -> ', response.height)
-        console.log('fileSize -> ', response.fileSize)
-        console.log('type -> ', response.type)
-        console.log('fileName -> ', response.fileName)
-        setFilePath(respone.uri)
+        const { uri, type, fileName } = response
+        const name = fileName
+        const source = {
+          uri,
+          type,
+          name,
+        }
+        cloudinaryUpload(source)
       })
     }
   }
@@ -287,67 +472,26 @@ export default function RoomScreen({ route }) {
         alert(response.errorMessage)
         return
       }
-      console.log('base64 -> ', response.base64)
-      console.log('uri -> ', response.uri)
-      console.log('width -> ', response.width)
-      console.log('height -> ', response.height)
-      console.log('fileSize -> ', response.fileSize)
-      console.log('type -> ', response.type)
-      console.log('fileName -> ', response.fileName)
-      setFilePath(response.uri)
-      // setMessages((prev) => [...prev, { text: '' }])
-      setText(' ')
+      const { uri, type, fileName } = response
+      const name = fileName
+      const source = {
+        uri,
+        type,
+        name,
+      }
+      cloudinaryUpload(source)
     })
   }
-
-  function renderImageOptions(props) {
-    return (
-      <View>
-        <View style={styles.bottomComponentContainer}>
-          <IconButton
-            style={styles.CameraButtonsStyle}
-            icon="camera"
-            size={26}
-            color="#0078FF"
-            onPress={() => captureImage('photo')}
-          />
-          <View
-            style={{
-              flexDirection: 'row',
-            }}>
-            <IconButton
-              style={styles.ImageButtonsStyle}
-              icon="file"
-              size={26}
-              color="#0078FF"
-              onPress={() => chooseFile('photo')}
-            />
-            {filePath ? (
-              <Text
-                style={{
-                  alignSelf: 'center',
-                }}>
-                {' '}
-                1
-              </Text>
-            ) : null}
-          </View>
-        </View>
-      </View>
-    )
-  }
-  //******************Handle images*****************
 
   return (
     <GiftedChat
       listViewProps={{
         style: {
-          backgroundColor: '#fff',
+          backgroundColor: colors.white,
         },
       }}
       messages={messages}
       onSend={(text) => handleSend(text)}
-      // onSend={() => alert('hello')}
       user={{ _id: user.name }}
       text={text}
       onInputTextChanged={(val) => setText(val)}
@@ -364,7 +508,6 @@ export default function RoomScreen({ route }) {
       scrollToBottomComponent={scrollToBottomComponent}
       renderSystemMessage={renderSystemMessage}
       renderScrollComponent
-      // shouldUpdateMessage={filePath}
       infiniteScroll
       loadEarlier
       onLoadEarlier={LoadEarlierMessages}
@@ -394,14 +537,14 @@ const styles = StyleSheet.create({
   ImageHandlerContainer: {
     flex: 1,
     flexDirection: 'row',
-    backgroundColor: '#000',
+    backgroundColor: colors.black,
   },
   CameraButtonsStyle: {},
   ImageButtonsStyle: {
     marginLeft: -1,
   },
   systemMessageWrapper: {
-    backgroundColor: '#15A9E0',
+    backgroundColor: colors.systemMessageWrapper,
     borderRadius: 4,
     padding: 5,
   },
@@ -411,7 +554,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   UsernameText: {
-    color: '#000',
+    color: colors.black,
     fontSize: 12,
     textAlign: 'right',
     alignSelf: 'stretch',

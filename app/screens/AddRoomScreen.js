@@ -19,13 +19,13 @@ export default function AddRoomScreen({ navigation }) {
           name: roomName,
           description,
           latestMessage: {
-            text: `You have joined the room ${roomName}.`,
+            text: `Welcome to room ${roomName}.`,
             createdAt: new Date().getTime(),
           },
         })
         .then((docRef) => {
           docRef.collection('MESSAGES').add({
-            text: `You have joined the room ${roomName}.`,
+            text: `Welcome to ${roomName} room.`,
             createdAt: new Date().getTime(),
             system: true,
           })

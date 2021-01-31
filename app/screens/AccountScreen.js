@@ -15,7 +15,6 @@ import {
 import React, { useContext, useEffect, useState } from 'react'
 
 import AuthContext from '../auth/context'
-import GoogleData from './GoogleLoginScreen'
 import UserCard from '../components/userCard'
 import auth from '@react-native-firebase/auth'
 

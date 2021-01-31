@@ -19,11 +19,11 @@ import {
 import React, { useContext, useEffect, useState } from 'react'
 
 import AuthContext from '../auth/context'
-import GoogleData from './GoogleLoginScreen'
 import Loading from '../components/Loading'
 import UserCard from '../components/userCard'
 import auth from '@react-native-firebase/auth'
 import firestore from '@react-native-firebase/firestore'
+import messaging from '@react-native-firebase/messaging'
 import useStatsBar from '../utils/useStatusBar'
 
 export default function MainScreen({ navigation }) {
@@ -36,6 +36,7 @@ export default function MainScreen({ navigation }) {
   /**
    * Fetch messages from Firestore
    */
+
   useEffect(() => {
     const unsubscribe = firestore()
       .collection('Chats')
@@ -49,7 +50,9 @@ export default function MainScreen({ navigation }) {
             ...documentSnapshot.data(),
           }
         })
+
         console.log('Chatrooms refreshed')
+
         setChatRoom(chatroom)
 
         if (loading) {
@@ -84,7 +87,10 @@ export default function MainScreen({ navigation }) {
         renderItem={({ item }) => (
           <TouchableOpacity
             onPress={() =>
-              navigation.navigate('Room', { chatRoom_id: item._id })
+              navigation.navigate('Room', {
+                chatRoom_id: item._id,
+                Room_Name: item.name,
+              })
             }>
             <List.Item
               title={item.name}
