@@ -44,14 +44,14 @@ export default function RoomScreen({ route }) {
   const { Room_Name } = route.params
 
   useStatsBar('light-content')
-  //console.log(chatRoom_id)
+  console.log(chatRoom_id)
 
  const importData = async () => {
    try {
      const keys = await AsyncStorage.getAllKeys()
      const result = await AsyncStorage.multiGet(keys)
 
-     return result.map((req) => (req)).typeOf(req)
+     return result.map((req) => (req)).forEach(console.log)
    } catch (error) {
      console.log(error)
    }
@@ -144,34 +144,34 @@ async function handleSend(messages) {
 //saveData()
 //AsyncStorage.clear()
 //setStringValue()
-mergeUsers()
-importData()
-    // if (AskedUserForNotification == false) {
-    //   Alert.alert(
-    //     'Notifications?',
-    //     'Would you like to revice notifications from this room?',
-    //     [
-    //       {
-    //         text: 'Yes',
-    //         onPress: () =>
-    //           messaging()
-    //             .subscribeToTopic(chatRoom_id)
-    //             .then(() => console.log('Subscribed to topic!'))
-    //             .then((AskedUserForNotification = true)),
-    //       },
+//mergeUsers()
+//importData()
+    if (AskedUserForNotification == false) {
+      Alert.alert(
+        'Notifications?',
+        'Would you like to revice notifications from this room?',
+        [
+          {
+            text: 'Yes',
+            onPress: () =>
+              messaging()
+                .subscribeToTopic(chatRoom_id)
+                .then(() => console.log('Subscribed to topic!'))
+                .then((AskedUserForNotification = true)),
+          },
 
-    //       {
-    //         text: 'No',
-    //         onPress: () =>
-    //           messaging()
-    //             .unsubscribeFromTopic(chatRoom_id)
-    //             .then(() => console.log('Unsubscribed fom the topic!'))
-    //             .then((AskedUserForNotification = true)),
-    //       },
-    //     ],
-    //     { cancelable: false },
-    //   )
-    // }
+          {
+            text: 'No',
+            onPress: () =>
+              messaging()
+                .unsubscribeFromTopic(chatRoom_id)
+                .then(() => console.log('Unsubscribed fom the topic!'))
+                .then((AskedUserForNotification = true)),
+          },
+        ],
+        { cancelable: false },
+      )
+    }
 
     //Makes sure that the room with the newest message is showed on top af the MainScreen
     await firestore()

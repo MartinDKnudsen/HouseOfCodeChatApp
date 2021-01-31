@@ -1,4 +1,8 @@
 import { Alert, Button } from 'react-native'
+import {
+  NavigationContainer,
+  createStackNavigator,
+} from "@react-navigation/stack"
 import React, { useContext } from 'react'
 
 import AccountScreen from '../screens/AccountScreen'
@@ -10,13 +14,11 @@ import MainScreen from '../screens/MainScreen'
 import RoomScreen from '../screens/RoomScreen'
 import auth from '@react-native-firebase/auth'
 import colors from '../config/colors'
-import { createStackNavigator } from '@react-navigation/stack'
 import firestore from '@react-native-firebase/firestore'
 import { messagesListener } from '../screens/RoomScreen'
 
 const ChatAppStack = createStackNavigator()
 const ModalStack = createStackNavigator()
-
 /**
  * All chat app related screens
  */
@@ -49,55 +51,56 @@ function ChatApp() {
   }
   //************Sign user out of app****************
 
+
   return (
-    <ChatAppStack.Navigator
-      screenOptions={{
-        headerStyle: {
-          backgroundColor: colors.headerStyle_backgroundColor,
-        },
-        headerTintColor: colors.white,
-        headerTitleStyle: {
-          fontSize: 22,
-        },
-      }}>
-      <ChatAppStack.Screen
-        name="Home"
-        component={MainScreen}
-        options={({ navigation }) => ({
-          headerRight: () => (
-            <IconButton
-              icon="message-plus"
-              size={28}
-              color={colors.white}
-              onPress={() => navigation.navigate('AddRoom')}
-            />
-          ),
-          headerLeft: () => (
-            <IconButton
-              icon="account"
-              size={28}
-              color={colors.white}
-              onPress={() => navigation.navigate('Account')}
-            />
-          ),
-        })}
-      />
-      <ChatAppStack.Screen
-        name="Account"
-        component={AccountScreen}
-        options={() => ({
-          headerRight: () => (
-            <IconButton
-              icon="logout"
-              size={28}
-              color={colors.white}
-              onPress={() => signOut()}
-            />
-          ),
-        })}
-      />
-      <ChatAppStack.Screen name="Room" component={RoomScreen} />
-    </ChatAppStack.Navigator>
+      <ChatAppStack.Navigator
+        screenOptions={{
+          headerStyle: {
+            backgroundColor: colors.headerStyle_backgroundColor,
+          },
+          headerTintColor: colors.white,
+          headerTitleStyle: {
+            fontSize: 22,
+          },
+        }}>
+        <ChatAppStack.Screen
+          name="Home"
+          component={MainScreen}
+          options={({ navigation }) => ({
+            headerRight: () => (
+              <IconButton
+                icon="message-plus"
+                size={28}
+                color={colors.white}
+                onPress={() => navigation.navigate("AddRoom")}
+              />
+            ),
+            headerLeft: () => (
+              <IconButton
+                icon="account"
+                size={28}
+                color={colors.white}
+                onPress={() => navigation.navigate("Account")}
+              />
+            ),
+          })}
+        />
+        <ChatAppStack.Screen
+          name="Account"
+          component={AccountScreen}
+          options={() => ({
+            headerRight: () => (
+              <IconButton
+                icon="logout"
+                size={28}
+                color={colors.white}
+                onPress={() => signOut()}
+              />
+            ),
+          })}
+        />
+        <ChatAppStack.Screen name="Room" component={RoomScreen} />
+      </ChatAppStack.Navigator>
   )
 }
 

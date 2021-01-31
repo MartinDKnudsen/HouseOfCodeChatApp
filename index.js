@@ -37,14 +37,4 @@ messaging().setBackgroundMessageHandler(async (remoteMessage) => {
   console.log("new message")
 })
 
-PushNotification.createChannel(
-  {
-    channelId: 'channel-id', // (required)
-    channelName: 'My channel', // (required)
-    channelDescription: 'A channel to categorise your notifications', // (optional) default: undefined.
-    vibrate: true, // (optional) default: true. Creates the default vibration patten if true.
-  },
-  (created) => console.log(`createChannel returned '${created}'`), // (optional) callback returns whether the channel was created, false means it already existed.
-)
-
 AppRegistry.registerComponent(appName, () => App)
