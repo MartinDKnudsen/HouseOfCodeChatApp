@@ -6,18 +6,22 @@ import {
   StyleSheet,
   Text,
   View,
-} from 'react-native'
-import { NavigationContainer, useNavigation } from '@react-navigation/native'
-import React, { useContext, useEffect, useState } from 'react'
+} from "react-native"
+import {
+  NavigationContainer,
+  useLinking,
+  useNavigation,
+} from "@react-navigation/native"
+import React, { useContext, useEffect, useRef, useState } from "react"
 
-import AppNavigator from './app/navigation/AppNavigator'
-import AuthContext from './app/auth/context'
-import AuthNavigator from './app/navigation/AuthNavigator'
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
-import RNBootSplash from 'react-native-bootsplash'
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
-import { createStackNavigator } from '@react-navigation/stack'
-import firestore from '@react-native-firebase/firestore'
+import AppNavigator from "./app/navigation/AppNavigator"
+import AuthContext from "./app/auth/context"
+import AuthNavigator from "./app/navigation/AuthNavigator"
+import Icon from "react-native-vector-icons/MaterialCommunityIcons"
+import RNBootSplash from "react-native-bootsplash"
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs"
+import { createStackNavigator } from "@react-navigation/stack"
+import firestore from "@react-native-firebase/firestore"
 
 /**
  * Sample React Native App

@@ -22,18 +22,10 @@ PushNotification.configure({
   onNotification: function (notification) {
     console.log("ON NOTIFICATION:", notification)
   },
-
-  onAction: function (notification) {
-    // console.log('ACTION:', notification.action)
-    //console.log('NOTIFICATION:', notification)
-    console.log("OPEND Notifiction: ", notification.data.room_id)
-    // process the action
-  },
 })
 
 // Register background handler
 messaging().setBackgroundMessageHandler(async (remoteMessage) => {
- // console.log('Message handled in the background!', remoteMessage)
   console.log("new message")
 })
 

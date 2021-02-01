@@ -5,7 +5,7 @@ import {
   GiftedChat,
   Send,
   SystemMessage,
-} from 'react-native-gifted-chat'
+} from "react-native-gifted-chat"
 import {
   ActivityIndicator,
   Alert,
@@ -14,117 +14,39 @@ import {
   StyleSheet,
   Text,
   View,
-} from 'react-native'
+} from "react-native"
 import {
   ImagePicker,
   launchCamera,
   launchImageLibrary,
-} from 'react-native-image-picker'
-import React, { useContext, useEffect, useState } from 'react'
+} from "react-native-image-picker"
+import React, { useContext, useEffect, useState } from "react"
 
 import { AsyncStorage } from "react-native"
-import AuthContext from '../auth/context'
-import { IconButton } from 'react-native-paper'
-import PushNotification from 'react-native-push-notification'
-import colors from '../config/colors'
-import firestore from '@react-native-firebase/firestore'
-import messaging from '@react-native-firebase/messaging'
-import useStatsBar from '../utils/useStatusBar'
+import AuthContext from "../auth/context"
+import { IconButton } from "react-native-paper"
+import PushNotification from "react-native-push-notification"
+import colors from "../config/colors"
+import firestore from "@react-native-firebase/firestore"
+import messaging from "@react-native-firebase/messaging"
 
 var AskedUserForNotification = false
 var numberOfMessagesToLoad = 0
 var maxMsg = 0
 export default function RoomScreen({ route }) {
   const [messages, setMessages] = useState([])
-  const [filePath, setFilePath] = useState('')
+  const [filePath, setFilePath] = useState("")
   const [text, setText] = useState(null)
   const [refreshMessages, startRefreshMessages] = useState(0)
   const { user } = useContext(AuthContext)
   const { chatRoom_id } = route.params
   const { Room_Name } = route.params
 
-  useStatsBar('light-content')
-  console.log(chatRoom_id)
-
- const importData = async () => {
-   try {
-     const keys = await AsyncStorage.getAllKeys()
-     const result = await AsyncStorage.multiGet(keys)
-
-     return result.map((req) => (req)).forEach(console.log)
-   } catch (error) {
-     console.log(error)
-   }
-}
-
-const USER_1 = {
-  name: user.name,
-  chatRooms: {
-chatRoom_id
-  },
-}
-
-
-const mergeUsers = async () => {
-  try {
-    //save first user
-    await AsyncStorage.setItem(user.email, JSON.stringify(USER_1))
-
-    // merge USER_2 into saved USER_1
-    //await AsyncStorage.mergeItem("@MyApp_user", JSON.stringify(USER_2))
-
-    // read merged item
-    const currentUser = await AsyncStorage.getItem(user.email)
-const test = currentUser.hasOwnProperty('chatRooms')
-    console.log(test)
-  }
-catch(error)
-{
-	console.log(error)
-}
-}
-
-const userAskedForNotifications = async () => 
-{
- try {
-   let value = await AsyncStorage.getItem(user.email)
-   if (value != null) {
-     // do something
-	 if (value !== chatRoom_id) 
-	 {
-		 console.log("USER not asked about ")
-	 }
-
-	//let roomID = AsyncStorage.getItem(chatRoom_id)
-	//if(roomID !== null)
-	//{console.log("and a key => " + roomID)	
-	//}else{
-	//	console.log("no key")}
-   } 
-   else {
-	 console.log("No such user")
-     // do something else
-   }
- } catch (error) {
-   // Error retrieving data
- }
-}
-
-const setStringValue = async () => {
-
-AsyncStorage.getItem("contacts").then((contacts) => {
-  const c = contacts ? JSON.parse(contacts) : []
-  c.push(con)
-  AsyncStorage.setItem("contacts", JSON.stringify(c))
-})
-
-}
-
-async function handleSend(messages) {
+  async function handleSend(messages) {
     firestore()
-      .collection('Chats')
+      .collection("Chats")
       .doc(chatRoom_id)
-      .collection('MESSAGES')
+      .collection("MESSAGES")
       .add({
         text,
         createdAt: new Date().getTime(),
@@ -137,35 +59,27 @@ async function handleSend(messages) {
         room_Name: Room_Name,
         ChatRoom_id: chatRoom_id,
       })
-      .then(function (docRef) {
-      //  console.log('Document written with ID: ', docRef.id)
-      })
 
-//saveData()
-//AsyncStorage.clear()
-//setStringValue()
-//mergeUsers()
-//importData()
     if (AskedUserForNotification == false) {
       Alert.alert(
-        'Notifications?',
-        'Would you like to revice notifications from this room?',
+        "Notifications?",
+        "Would you like to revice notifications from this room?",
         [
           {
-            text: 'Yes',
+            text: "Yes",
             onPress: () =>
               messaging()
                 .subscribeToTopic(chatRoom_id)
-                .then(() => console.log('Subscribed to topic!'))
+                .then(() => console.log("Subscribed to topic!"))
                 .then((AskedUserForNotification = true)),
           },
 
           {
-            text: 'No',
+            text: "No",
             onPress: () =>
               messaging()
                 .unsubscribeFromTopic(chatRoom_id)
-                .then(() => console.log('Unsubscribed fom the topic!'))
+                .then(() => console.log("Unsubscribed fom the topic!"))
                 .then((AskedUserForNotification = true)),
           },
         ],
@@ -175,7 +89,7 @@ async function handleSend(messages) {
 
     //Makes sure that the room with the newest message is showed on top af the MainScreen
     await firestore()
-      .collection('Chats')
+      .collection("Chats")
       .doc(chatRoom_id)
       .set(
         {
@@ -191,9 +105,9 @@ async function handleSend(messages) {
   useEffect(() => {
     if (user != null) {
       var maxMessages = firestore()
-        .collection('Chats')
+        .collection("Chats")
         .doc(chatRoom_id)
-        .collection('MESSAGES')
+        .collection("MESSAGES")
         .onSnapshot((querySnapShot) => {
           if (querySnapShot != null) {
             maxMsg = querySnapShot.size
@@ -201,17 +115,17 @@ async function handleSend(messages) {
         })
 
       if (maxMsg - numberOfMessagesToLoad < 0) {
-        console.log('No more messages to load')
+        console.log("No more messages to load")
       } else {
         numberOfMessagesToLoad += 10
       }
 
       if (numberOfMessagesToLoad > 1) {
         const messagesListener = firestore()
-          .collection('Chats')
+          .collection("Chats")
           .doc(chatRoom_id)
-          .collection('MESSAGES')
-          .orderBy('createdAt', 'desc')
+          .collection("MESSAGES")
+          .orderBy("createdAt", "desc")
           .limit(numberOfMessagesToLoad)
           .onSnapshot((querySnapshot) => {
             const messagesFromFirebase = querySnapshot.docs.map((doc) => {
@@ -219,8 +133,8 @@ async function handleSend(messages) {
               // console.log('fb ', firebaseData)
               const data = {
                 _id: doc.id,
-                text: '',
-                image: '',
+                text: "",
+                image: "",
                 createdAt: new Date().getTime(),
                 ...firebaseData,
               }
@@ -241,7 +155,7 @@ async function handleSend(messages) {
           })
         return () => messagesListener()
       } else {
-        console.log('No more messages to load')
+        console.log("No more messages to load")
       }
     }
   }, [refreshMessages])
@@ -261,9 +175,9 @@ async function handleSend(messages) {
         }}
         textStyle={{
           right: {
-            color: '#fff',
+            color: "#fff",
           },
-          left: { color: '#000' },
+          left: { color: "#000" },
         }}
       />
     )
@@ -305,25 +219,25 @@ async function handleSend(messages) {
             icon="camera"
             size={26}
             color={colors.chatIcons}
-            onPress={() => captureImage('photo')}
+            onPress={() => captureImage("photo")}
           />
           <View
             style={{
-              flexDirection: 'row',
+              flexDirection: "row",
             }}>
             <IconButton
               style={styles.ImageButtonsStyle}
               icon="file"
               size={26}
               color={colors.chatIcons}
-              onPress={() => chooseFile('photo')}
+              onPress={() => chooseFile("photo")}
             />
             {filePath ? (
               <Text
                 style={{
-                  alignSelf: 'center',
+                  alignSelf: "center",
                 }}>
-                {' '}
+                {" "}
               </Text>
             ) : null}
           </View>
@@ -351,33 +265,33 @@ async function handleSend(messages) {
   //Upload image to cloudinary
   const cloudinaryUpload = (photo) => {
     const data = new FormData()
-    data.append('file', photo)
-    data.append('upload_preset', 'chatApp')
-    data.append('cloud_name', 'dvya2cgfo')
-    fetch('https://api.cloudinary.com/v1_1/dvya2cgfo/image/upload', {
-      method: 'post',
+    data.append("file", photo)
+    data.append("upload_preset", "chatApp")
+    data.append("cloud_name", "dvya2cgfo")
+    fetch("https://api.cloudinary.com/v1_1/dvya2cgfo/image/upload", {
+      method: "post",
       body: data,
     })
       .then((res) => res.json())
       .then((data) => {
-        console.log('data ', data)
-        setText(' ')
+        console.log("data ", data)
+        setText(" ")
         setFilePath(data.secure_url)
       })
       .catch((err) => {
-        console.log('error is ', err)
-        alert('An Error Occured While Uploading')
+        console.log("error is ", err)
+        alert("An Error Occured While Uploading")
       })
   }
   //Request Premissions >
   const requestCameraPermission = async () => {
-    if (Platform.OS === 'android') {
+    if (Platform.OS === "android") {
       try {
         const granted = await PermissionsAndroid.request(
           PermissionsAndroid.PERMISSIONS.CAMERA,
           {
-            title: 'Camera Permission',
-            message: 'App needs camera permission',
+            title: "Camera Permission",
+            message: "App needs camera permission",
           },
         )
         // If CAMERA Permission is granted
@@ -390,20 +304,20 @@ async function handleSend(messages) {
   }
 
   const requestExternalWritePermission = async () => {
-    if (Platform.OS === 'android') {
+    if (Platform.OS === "android") {
       try {
         const granted = await PermissionsAndroid.request(
           PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
           {
-            title: 'External Storage Write Permission',
-            message: 'App needs write permission',
+            title: "External Storage Write Permission",
+            message: "App needs write permission",
           },
         )
         // If WRITE_EXTERNAL_STORAGE Permission is granted
         return granted === PermissionsAndroid.RESULTS.GRANTED
       } catch (err) {
         console.warn(err)
-        alert('Write permission err', err)
+        alert("Write permission err", err)
       }
       return false
     } else return true
@@ -422,18 +336,18 @@ async function handleSend(messages) {
     let isStoragePermitted = await requestExternalWritePermission()
     if (isCameraPermitted && isStoragePermitted) {
       launchCamera(options, (response) => {
-        console.log('Response = ', response)
+        console.log("Response = ", response)
 
         if (response.didCancel) {
-          alert('User cancelled camera picker')
+          alert("User cancelled camera picker")
           return
-        } else if (response.errorCode == 'camera_unavailable') {
-          alert('Camera not available on device')
+        } else if (response.errorCode == "camera_unavailable") {
+          alert("Camera not available on device")
           return
-        } else if (response.errorCode == 'permission') {
-          alert('Permission not satisfied')
+        } else if (response.errorCode == "permission") {
+          alert("Permission not satisfied")
           return
-        } else if (response.errorCode == 'others') {
+        } else if (response.errorCode == "others") {
           alert(response.errorMessage)
           return
         }
@@ -457,18 +371,18 @@ async function handleSend(messages) {
       quality: 1,
     }
     launchImageLibrary(options, (response) => {
-      console.log('Response = ', response)
+      console.log("Response = ", response)
 
       if (response.didCancel) {
-        alert('User cancelled camera picker')
+        alert("User cancelled camera picker")
         return
-      } else if (response.errorCode == 'camera_unavailable') {
-        alert('Camera not available on device')
+      } else if (response.errorCode == "camera_unavailable") {
+        alert("Camera not available on device")
         return
-      } else if (response.errorCode == 'permission') {
-        alert('Permission not satisfied')
+      } else if (response.errorCode == "permission") {
+        alert("Permission not satisfied")
         return
-      } else if (response.errorCode == 'others') {
+      } else if (response.errorCode == "others") {
         alert(response.errorMessage)
         return
       }
@@ -518,25 +432,25 @@ async function handleSend(messages) {
 const styles = StyleSheet.create({
   loadingContainer: {
     flex: 1,
-    alignItems: 'center',
+    alignItems: "center",
     marginTop: 300,
-    justifyContent: 'center',
+    justifyContent: "center",
   },
   chatBackground: {
     backgroundColor: colors.chatBackgound,
   },
   sendingContainer: {
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
   bottomComponentContainer: {
     flex: 1,
-    flexDirection: 'row',
+    flexDirection: "row",
     width: 80,
   },
   ImageHandlerContainer: {
     flex: 1,
-    flexDirection: 'row',
+    flexDirection: "row",
     backgroundColor: colors.black,
   },
   CameraButtonsStyle: {},
@@ -550,13 +464,13 @@ const styles = StyleSheet.create({
   },
   systemMessageText: {
     fontSize: 14,
-    color: '#fff',
-    fontWeight: 'bold',
+    color: "#fff",
+    fontWeight: "bold",
   },
   UsernameText: {
     color: colors.black,
     fontSize: 12,
-    textAlign: 'right',
-    alignSelf: 'stretch',
+    textAlign: "right",
+    alignSelf: "stretch",
   },
 })
