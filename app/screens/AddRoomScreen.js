@@ -1,20 +1,19 @@
-import { IconButton, Title } from 'react-native-paper'
-import React, { useState } from 'react'
-import { StyleSheet, View } from 'react-native'
+import { IconButton, Title } from "react-native-paper"
+import React, { useState } from "react"
+import { StyleSheet, View } from "react-native"
 
-import FormButton from '../components/FormButton'
-import FormInput from '../components/FormInput'
-import firestore from '@react-native-firebase/firestore'
-import useStatsBar from '../utils/useStatusBar'
+import FormButton from "../components/FormButton"
+import FormInput from "../components/FormInput"
+import firestore from "@react-native-firebase/firestore"
 
 export default function AddRoomScreen({ navigation }) {
-  useStatsBar('dark-content')
-  const [roomName, setRoomName] = useState('')
-  const [description, setDescription] = useState('')
+  useStatsBar("dark-content")
+  const [roomName, setRoomName] = useState("")
+  const [description, setDescription] = useState("")
   function handleButtonPress() {
     if (roomName.length > 0) {
       firestore()
-        .collection('Chats')
+        .collection("Chats")
         .add({
           name: roomName,
           description,
@@ -24,12 +23,12 @@ export default function AddRoomScreen({ navigation }) {
           },
         })
         .then((docRef) => {
-          docRef.collection('MESSAGES').add({
+          docRef.collection("MESSAGES").add({
             text: `Welcome to ${roomName} room.`,
             createdAt: new Date().getTime(),
             system: true,
           })
-          navigation.navigate('Home')
+          navigation.navigate("Home")
         })
     }
   }
@@ -80,17 +79,17 @@ const styles = StyleSheet.create({
   },
   innerContainer: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
   title: {
     fontSize: 24,
     marginBottom: 10,
-    color: '#118793',
-    fontWeight: 'bold',
+    color: "#118793",
+    fontWeight: "bold",
   },
   buttonLabel: {
     fontSize: 22,
-    color: '#fff',
+    color: "#fff",
   },
 })
